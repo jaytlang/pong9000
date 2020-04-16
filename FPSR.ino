@@ -8,7 +8,6 @@
    - Extreme portability -> executability on the ESP32
    - Honed C library, designed for safety and ISA reduction 
    - Fast compilation and playable games; but readable code
-   - cat -v style restrictions :P
 
    Implements a heavily modified CISC instruction set.
 
