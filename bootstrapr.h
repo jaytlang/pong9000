@@ -1,8 +1,8 @@
 
-/* A string that is the compiler. 
- * Attempting to bootstrap. 
- */
- 
+/* A series of test suites for the compiler
+ * Please feel free to tweak this!
+*/
+
  #ifndef bootstraptest_h
  #define bootstraptest_h
  
