@@ -1,0 +1,17 @@
+EVERYTHING EXCEPT
+- for loops
+- floating pt: integer and char and pointers only
+- += -= *= /=
+- structs
+- preprocessor - no #include or #define - use global variables
+- switch statements
+- char mystr[50] = "....", use this instead
+    char *mystr;
+    mystr = heapalloc(50*sizeof(char))
+
+
+CURRENTLY SUPPORTED FUNCTIONS / TO BE SUPPORTED
+- Server connections: httpget(), httppost()
+- String operations: use the printtxt, printchr, and printnum libraries
+- TFT drawing: greg's methods in the chat
+- Compile escape function to switch contexts
