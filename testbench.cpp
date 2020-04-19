@@ -1,36 +1,31 @@
+#include "testbench.h"
 
-/* A series of test suites for the compiler
- * Please feel free to tweak this!
-*/
-
- #ifndef bootstraptest_h
- #define bootstraptest_h
- 
- #include "libfpsr.h"
-
- char* selsort =
- "void selsort(int *a, int size){"
- "int imin, i, j, tmp;"
- "i = 0;"
- "while(i < size-1){"
- "imin = i;"
- "j = i+1;"
- "while(j < size){"
- "if(a[j] < a[imin]) imin = j;"
- "j++;"
- "}"
- "tmp = a[imin];"
- "a[imin] = a[i];"
- "a[i++] = tmp;"
- "}}"
- "int main(){"
- "int *a, i;"
- "i = 0;"
- "a = heapalloc(6*sizeof(int));"
- "a[0] = 45; a[1] =  4; a[2] = 2; a[3] = 1; a[4] = 0; a[5] = -33"
- "selsort(a, 6);"
- "while(i < 6)"
- "printnum(a[i++], \"SERIAL\", 0, 0);"
+char* selsort =
+ "void selsort(int *a, int size){\n"
+ "int imin, i, j, tmp;\n"
+ "i = 0;\n"
+ "while(i < size-1){\n"
+ "imin = i;\n"
+ "j = i+1;\n"
+ "while(j < size){\n"
+ "if(a[j] < a[imin]) imin = j;\n"
+ "j++;\n"
+ "}\n"
+ "tmp = a[imin];\n"
+ "a[imin] = a[i];\n"
+ "a[i++] = tmp;\n"
+ "}}\n"
+ "int main(){\n"
+ "int *a, i;\n"
+ "tftfill(0x0000);\n"
+ "i = 0;\n"
+ "a = heapalloc(6*sizeof(int));\n"
+ "a[0] = 45; a[1] =  4; a[2] = 2; a[3] = 1; a[4] = 0; a[5] = -33;\n"
+ "selsort(a, 6);\n"
+ "while(i < 6)\n"
+ "printnum(a[i++], \"SERIAL\", 0, 0);\n"
+ "tftprint(\"Done sorting!\nHI FROM FPSR!\");"
+ "printnum(buttonread(16), \"SERIAL\", 0, 0);\n"
  "return 0;}";
  
  
@@ -72,5 +67,3 @@
                      "  printtxt(\"Hello world\", \"SERIAL\", 0, 0);\n\n"
                      "  return 0;\n\n"
                      "}\n";
-
- #endif /* bootstrapr.h */

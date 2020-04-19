@@ -16,6 +16,11 @@
 
 /* Future includes go here */
 #include <Arduino.h>
+#include <TFT_eSPI.h>
+#include <SPI.h>
+#include <WiFi.h>
+
+extern TFT_eSPI maintft;
 
 /* Printline.
  *  DESC: Interfaces with Serial and prints to monitor, or other strings. 
@@ -32,10 +37,12 @@
  *        ...1, which overwrites
  *        ...or 2, which concats
  *        
- *      Feel free to make an enum to help with this. FPSR is simple.
+ *      Feel free to make an enum to help with this. FPSR is too simple to
+ *      do a lot of this stuff, sorry it's very non-UNIXy.
  *        
- *  REQS: Serial.begin() somewhere in your code.
+ *  REQS: Serial.begin() is done in the bootstrap.
  */
+
 int    printtxt(const char* src, char* dest, int sizedest, int flag);
 int    printchr(const char value, char* dest, int sizedest, int flag);
 int    printnum(const int value, char* dest, int sizedest, int flag);
@@ -59,5 +66,57 @@ int    printnum(const int value, char* dest, int sizedest, int flag);
  */
 void*  heapalloc(const int sizealloc);
 void   heapfree(int ptr);
+
+/* TFT operations.
+ * DESC: These largely shadow existing methods in the TFT library, sans
+ *    the class prefix. Implementation consists of one liners for the most
+ *    part, but there are some semantic differences where necessary.
+ *    
+ *    TFT is pre-instantiated with a rotation value of '1'. 
+ *    RE. coloration, I expect two-byte hexadecimal color codes instead 
+ *    of macro defs since FPSR has no preprocessor.
+ *    
+ *    Init will be called for you and rotation is preset to one. For
+ *    more information about what is "done for you" see bootstrap.h.
+ *    
+ * REQS: Init is called for you. Change the rotation and call fill.
+ */
+void  tftprint(char *toprint);
+void  tftrotation(int amt);
+void  tfttextcolor(int foreground, int background);
+void  tfttextsize(int sz);
+void  tftfill(int color);
+void  tftdrawcircle(int xcoord, int ycoord, int radius, int color);
+void  tftdrawrect(int xcoord, int ycoord, int w, int h, int color);
+
+/* Button reading
+ * DESC: Exactly what you think it is. Returns active low.
+ *    Pins 16 and 5 are configured by the bootstrap for reading
+ *    whenever you want them (INPUT_PULLUP). If this needs to
+ *    change, let me know so I can yeet it over. In the
+ *    meantime, the library checks for correct pin usage and
+ *    will fail out with a -1 if you give it something bad.
+ *    
+ * REQS: Buttons are inited in bootstrap. 
+ */
+int   buttonread(int pin);
+
+/* Internet connection
+ * DESC: Supports get() and post() requests.
+ *    Both of these requests need an input, a destination server, and
+ *    an allocated output buffer + its size to make sure we don't go
+ *    over its required length.
+ *    
+ *    Note that heap space might be an issue. If your code breaks,
+ *    tweak the call to fpsr to minimize the required space. When
+ *    fpsr gives you a cryptic error or crashes, not enough space
+ *    allocated is to blame (assuming you've tested your code)
+ *    
+ * REQS: Specify a destination, and talk to Jessie / make sure it's
+ *    hooked into the server to give you reasonable feedback.
+ */
+void httpget(char* input, char* serverpath, char* output, int sizeofoutput);
+void httppost(char* input, char* serverpath, char* output, int sizeofoutput);
+
 
 #endif /* libfpsr.h */

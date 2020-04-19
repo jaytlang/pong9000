@@ -26,8 +26,7 @@
 
 */
 
-#include "libfpsr.h"
-#include "bootstrapr.h"
+#include "bootstrap.h"
 
 /* FPSR STARTS HERE */
 
@@ -56,7 +55,9 @@ enum{ CHAR, INT, PTR };
 enum{ LC, LI, LN, SC, SN, PSH, JMP, BEQZ, BNEZ, CALL, NFRM, \
       POP, RET, LEA, OR, XOR, AND, EQU, NEQ, LST, LEQ, GTT, \
       GEQ, SHL, SHR, ADD, SUB, MUL, DIV, MOD, EXIT, HALC, \
-      HFRE, MCMP, PRTT, PRTC, PRTN};
+      HFRE, MCMP, PRTT, PRTC, PRTN, TPR, TROT, TTXC, TTXS, \
+      TFS, TDC, TDR, BTRD, GET, POST };
+      
 enum{ TOKEN, HASH, NAME, TYPE, CLASS, VALUE, STYPE, SCLASS, SVAL, IDSIZE };
 
 enum{ Num = 128, Fun, Lib, Glo, Loc, Id, \
@@ -296,6 +297,7 @@ mvn(int vtoken)
     printnum(linenumber, "SERIAL", 0, 0);
     exit(-1);
   }
+  return;
 }
 
 void
@@ -1125,9 +1127,8 @@ int
 execvm()
 {
   int opcode;
-  printtxt("Executing", "SERIAL", 0, 0);
-  printtxt("_________", "SERIAL", 0, 0);
-
+  tftprint("Executing\n");
+  tftprint("_________\n");
 
   while(1){
     opcode = *pc++;
@@ -1232,6 +1233,26 @@ execvm()
       ax = printchr((char)sp[3], (char*)sp[2], sp[1], *sp);
     else if(opcode == PRTN)
       ax = printnum(sp[3], (char*)sp[2], sp[1], *sp); 
+    else if(opcode == TPR)
+      tftprint((char*)*sp);
+    else if(opcode == TROT)
+      tftrotation(*sp);
+    else if(opcode == TTXC)
+      tfttextcolor(sp[1], *sp);
+    else if(opcode == TTXS)
+      tfttextsize(*sp);
+    else if(opcode == TFS)
+      tftfill(*sp);
+    else if(opcode == TDC)
+      tftdrawcircle(sp[3], sp[2], sp[1], *sp);
+    else if(opcode == TDR)
+      tftdrawrect(sp[4], sp[3], sp[2], sp[1], *sp);
+    else if(opcode == BTRD)
+      ax = buttonread(*sp);
+    else if(opcode == GET)
+      httpget((char*)sp[3], (char*)sp[2], (char*)sp[1], *sp);
+    else if(opcode == POST)
+      httppost((char*)sp[3], (char*)sp[2], (char*)sp[1], *sp);
       
     else{
       printtxt("Unknown instruction", "SERIAL", 0, 0);
@@ -1248,7 +1269,9 @@ execprep()
   
   src = "char else enum if int return sizeof while "
         "exit heapalloc heapfree memcmp printtxt printchr "
-        "printnum void main";
+        "printnum tftprint tftrotation tfttextcolor "
+        "tfttextsize tftfill tftdrawcircle tftdrawrect "
+        "buttonread httpget httppost void main";
 
   i = Char;
   while(i <= While){
@@ -1257,7 +1280,7 @@ execprep()
   }
 
   i = EXIT;
-  while(i <= PRTN){
+  while(i <= POST){
     lexer();
     currentidentifier[CLASS] = Lib;
     currentidentifier[TYPE] = INT;
@@ -1271,7 +1294,8 @@ execprep()
   lexer();
   mainptr = currentidentifier;
 
-  printtxt("Ate initializer into index table", "SERIAL", 0, 0);
+  tftprint("Ate initializer\n");
+  return;
 }
 
 int
@@ -1287,12 +1311,12 @@ fpsr(char* srcstr, int bpsize, int spsize)
   printtxt("All good", "SERIAL", 0, 0);
   if ((symboltable = (int*)heapalloc(spsize)) < 0) return -1;
   printtxt("All good", "SERIAL", 0, 0);
+  tftprint("Memory alloc all good\n");
   
   execprep();
 
   src = srcstr; /* TRIUMPH!! */
-  printtxt("Configuring stack", "SERIAL", 0, 0);
-
+  tftprint("Configuring stack\n");
   
   sp = (int*)((int)stacksegment + spsize);
   ax = 0;
@@ -1304,12 +1328,12 @@ fpsr(char* srcstr, int bpsize, int spsize)
   *--sp = spsize;
   *--sp = (int)tmp;
 
-  printtxt("Stack configured, beginning parse", "SERIAL", 0, 0);
+  tftprint("Compiling\n");
 
   linenumber = 1;
 
   parser();
-  printtxt("Finding main", "SERIAL", 0, 0);
+  tftprint("Finding main\n");
 
   if (!(pc = (int*)mainptr[VALUE])) {
     printtxt("Main not defined!", "SERIAL", 0, 0);
@@ -1319,16 +1343,11 @@ fpsr(char* srcstr, int bpsize, int spsize)
 }
 
 
+
 void setup() {
-  // put your setup code here, to run once:
-  char testsource[200];
-  int prstat;
-
-  Serial.begin(115200);
-  printtxt("Hello!", "SERIAL", 0, 0);
-
-  printtxt("Starting bootstrap initial test", "SERIAL", 0, 0);
-  fpsr(selsort, 75*1024, 35*1024);
+  char tocompile[500];
+  bootstrap(tocompile, 500);
+  fpsr(tocompile, 20*1024, 10*1024);
 }
 
 

@@ -2,6 +2,8 @@
 
 #include "libfpsr.h"
 
+TFT_eSPI maintft = TFT_eSPI();
+
 void*
 heapalloc(const int sizealloc)
 {
@@ -20,6 +22,7 @@ void
 heapfree(int ptr)
 {
   free((void*)ptr);
+  return;
 }
 
 int
@@ -91,4 +94,136 @@ printnum(const int value, char* dest, int sizedest, int flag)
       break;
   }
   return 0;
+}
+
+void
+tftprint(char *toprint)
+{
+  maintft.print(toprint);
+  return;
+}
+
+void
+tftrotation(int amt)
+{
+  if(amt > 3){
+    Serial.println("ERR: invalid rotation specified");
+    return;
+  }
+  maintft.setRotation(amt);
+  return;
+}
+
+void
+tfttextcolor(int foreground, int background)
+{
+  maintft.setTextColor(foreground, background);
+  return;
+}
+
+void
+tfttextsize(int sz)
+{
+  maintft.setTextSize(sz);
+  return;
+}
+
+void
+tftfill(int color)
+{
+  maintft.fillScreen(color);
+  maintft.setCursor(0, 0);
+  return;
+}
+
+void
+tftdrawcircle(int xcoord, int ycoord, int radius, int color)
+{
+  maintft.drawCircle(xcoord, ycoord, radius, color);
+  return;
+}
+
+void 
+tftdrawrect(int xcoord, int ycoord, int w, int h, int color)
+{
+  maintft.drawRect(xcoord, ycoord, w, h, color);
+  return;
+}
+
+int
+buttonread(int pin)
+{
+  if(pin != 16 && pin != 5){
+    Serial.println("ERR: Bad button read pin");
+    return -1;
+  }
+  return digitalRead(pin);
+}
+
+void
+httpget(char* input, char* serverpath, char* output, int sizeofoutput)
+{
+  WiFiClient client;
+  int len, i;
+  byte buf[sizeofoutput];
+
+  if(!client.connect("608dev-2.net", 80)){
+    Serial.println("CONS FAILED");
+    return;
+  }
+  client.print("GET ");
+  client.print(serverpath);
+  client.print("?");
+  client.println(input);
+  client.println("Host: 608dev-2.net");
+  client.println();
+
+  while (!client.available()) {}
+  len = client.available();
+  if(len >= sizeofoutput)
+    Serial.println("ERROR: BUFFER OVERFLOW POSSIBLE, MAKE YOUR OUTPUT ARRAY BIGGER");
+  
+  client.read(buf, len);
+  for (i = 0; i < len; i++)
+    output[i] = buf[i];
+
+  output[len] = '\0';
+  return;
+}
+
+void
+httppost(char* input, char* serverpath, char* output, int sizeofoutput)
+{
+  WiFiClient client;
+  int len, i;
+  byte buf[sizeofoutput];
+
+  len = strlen(input);
+
+  if(!client.connect("608dev-2.net", 80)){
+    Serial.println("CONS FAILED");
+    return;
+  }
+  client.print("POST ");
+  client.print(serverpath);
+  client.println(" HTTP/1.1");
+  client.println("Host: 608dev-2.net");
+  client.println("Content-Type: application/x-www-form-urlencoded");
+  client.print("Content-Length: ");
+  client.println(len);
+  client.println();
+
+  client.print(input);
+
+  while (!client.available()) {}
+  len = client.available();
+  if(len >= sizeofoutput)
+    Serial.println("ERROR: BUFFER OVERFLOW POSSIBLE, MAKE YOUR OUTPUT ARRAY BIGGER");
+  
+  client.read(buf, len);
+  for (i = 0; i < len; i++)
+    output[i] = buf[i];
+
+  output[len] = '\0';
+  return;
 }
