@@ -186,8 +186,14 @@ httpget(char* input, char* serverpath, char* output, int sizeofoutput)
   client.read(buf, len);
   for (i = 0; i < len; i++)
     output[i] = buf[i];
+    if(output[i] == '"' || output[i] == '"'){
+      Serial.println("Quote detectedded");
+    }
+
 
   output[len] = '\0';
+  Serial.println("Response is: ");
+  Serial.println(output);
   return;
 }
 
@@ -223,6 +229,7 @@ httppost(char* input, char* serverpath, char* output, int sizeofoutput)
   client.read(buf, len);
   for (i = 0; i < len; i++)
     output[i] = buf[i];
+    if(output[i] == '”' || output[i] == '“') output[i] = '"';
 
   output[len] = '\0';
   return;
