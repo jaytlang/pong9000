@@ -186,8 +186,8 @@ httpget(char* input, char* serverpath, char* output, int sizeofoutput)
   client.read(buf, len);
   for (i = 0; i < len; i++)
     output[i] = buf[i];
-    if(output[i] == '"' || output[i] == '"'){
-      Serial.println("Quote detectedded");
+    if(output[i] == '”' || output[i] == '“'){
+      output[i] = '"';
     }
 
 

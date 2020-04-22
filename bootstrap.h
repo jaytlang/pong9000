@@ -21,5 +21,6 @@
 #define LITTLEFPSRALLOC 10*1024
 
 void bootstrap(char* dbuffer, int sizeofdbuffer);
+void restrap(char* nsrc, char* dbuffer, int sizeofdbuffer);
 
 #endif /* bootstrap.h */

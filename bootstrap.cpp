@@ -33,6 +33,14 @@ bootstrap(char* dbuffer, int sizeofdbuffer)
   tftprint("Ready to go. DL'ing...\n");
   httpget("game_name=test_1&host=1", "/sandbox/sc/team070/request_handler/request_handler.py",\
       dbuffer, sizeofdbuffer);
-  Serial.println("This is a normal quote \"");
+  return;
+}
+
+void
+restrap(char* srcurl, char* dbuffer, int sizeofdbuffer)
+{
+  tftprint("Ready to go. DL'ing...\n");
+  httpget(srcurl, "/sandbox/sc/team070/request_handler/request_handler.py",\
+      dbuffer, sizeofdbuffer);
   return;
 }

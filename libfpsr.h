@@ -19,6 +19,7 @@
 #include <TFT_eSPI.h>
 #include <SPI.h>
 #include <WiFi.h>
+#include <math.h>
 
 extern TFT_eSPI maintft;
 
@@ -117,6 +118,12 @@ int   buttonread(int pin);
  */
 void httpget(char* input, char* serverpath, char* output, int sizeofoutput);
 void httppost(char* input, char* serverpath, char* output, int sizeofoutput);
+
+/* Math
+ * DESC: Supports sin and cos operations down to integer precision.
+ *    Operates in degrees rounded off accordingly, from 0 to 90.
+ *    TODO - see what Greg's using for now.
+ */
 
 
 #endif /* libfpsr.h */

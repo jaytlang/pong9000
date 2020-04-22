@@ -1127,8 +1127,7 @@ int
 execvm()
 {
   int opcode;
-  tftprint("Executing\n");
-  tftprint("_________\n");
+  tftfill(0x0000);
 
   while(1){
     opcode = *pc++;
@@ -1299,9 +1298,9 @@ execprep()
 }
 
 int
-fpsr(char* srcstr, int bpsize, int spsize)
+fpsr(char* srcstr, char* exitstr, int bpsize, int spsize)
 {
-  int *tmp;
+  int *tmp, ret;
 
   if ((textsegment = (int*)heapalloc(bpsize)) < 0) return -1;
   printtxt("All good", "SERIAL", 0, 0);
@@ -1320,6 +1319,7 @@ fpsr(char* srcstr, int bpsize, int spsize)
   
   sp = (int*)((int)stacksegment + spsize);
   ax = 0;
+  *--sp = 0;
   *--sp = EXIT;
   *--sp = PSH;
   tmp = sp;
@@ -1339,17 +1339,42 @@ fpsr(char* srcstr, int bpsize, int spsize)
     printtxt("Main not defined!", "SERIAL", 0, 0);
     exit(-1);
   }
-  return execvm();
-}
 
+  ret = execvm();
+  if(ret != 0)
+    printtxt((char*)ret, exitstr, 1, 100);
+  tftfill(0x0000);
+
+  /*
+   * if this is ever reached, free the heap-alloc'd stuff
+   * and return out. This should get back to setup().
+   */
+  heapfree(textsegment);
+  heapfree(datasegment);
+  heapfree(stacksegment);
+  heapfree(symboltable);
+  *srcstr = 0;
+  return ret;
+}
 
 
 void setup() {
-  char tocompile[500];
-  bootstrap(tocompile, 500);
-  fpsr(tocompile, 20*1024, 10*1024);
+  char basevisor[500];
+  char exitstr[100];
+  char nsrc[5000];
+  int rtstat;
+
+  *exitstr = 0;
+  rtstat = 0;
+  bootstrap(basevisor, 500);
+  while(1){
+    if(!rtstat)
+      rtstat = fpsr(basevisor, exitstr, 20*1024, 10*1024);
+    else{
+      restrap(exitstr, nsrc, 5000);
+      rtstat = fpsr(nsrc, exitstr, 20*1024, 10*1024);
+    }  
+  }
 }
-
-
 
 void loop() {}
