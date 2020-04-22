@@ -6,22 +6,19 @@
  */
 
 int
-gameshow(char* progress)
+gameshow(char* progress, char* name, char* host)
 {
-    char *name;
-
     tftfill(0x0000);
-    name = (char*)heapalloc(50);
     *name = 0;
-
+    *host = 0;
+    
     /* host first */
     while(*progress != '\'')
-        printchr(*progress, name, 2, 50);
+        printchr(*progress, host, 2, 50);
    
     tftprint("Host: ");
-    tftprint(name);
+    tftprint(host);
     tftprint("\n");         
-    *name = 0; 
    
     /* now for the game id */
     progress = progress + 4;
@@ -31,7 +28,6 @@ gameshow(char* progress)
     tftprint("Game: ");
     tftprint(name);
     tftprint("\n");
-    heapfree(name);
    
     /* button blocking */
     while(1){
@@ -44,21 +40,25 @@ gameshow(char* progress)
 int
 main()
 {
-    char *gameslist, *progress;
+    char *gameslist, *progress, *name, *host;
     int gameslistsize, sstat;
     
     gameslistsize = 500;
     gameslist = (*char)heapalloc(gameslistsize);
+    name = (*char)heapalloc(50);
+    host = (*char)heapalloc(50);
+
     httpget("what=whatever", "/sandbox/sc/team070/request_handler.py", \
         gameslist, 500);
     
     printtxt(gameslist, "SERIAL", 0, 0); 
-    if(*++gameslist == ']'){
+    if(gameslist[1] == ']'){
         tftprint("PANIC: EMPTY GAMES LIST");
         while(1){};
     }
-    progress = gameslist;
+    progress = gameslist + 1;
     sstat = 0;
+    *host = 0; *name = 0;
 
     while(1){
         /* increment */
@@ -69,10 +69,18 @@ main()
             progress = progress + 3;
         /* run the game show. ret == 1 -> download */
         sstat = gameshow(progress);
-        /*
         if(sstat){
+            /* co-opt the gameslist
+             * this will get freed down the line
+             */
+            printtxt("game_name=", gameslist, 1, 500);
+            printtxt(name, gameslist, 2, 500);
+            printtxt("&host=", gameslist, 2, 500);
+            printtxt(host, gameslist, 2, 500);
+            heapfree(name);
+            heapfree(host);
+            exit(gameslist);
         }
-        */
     }
     return -1;
 }
