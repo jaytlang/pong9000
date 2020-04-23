@@ -28,6 +28,9 @@
 
 #include "bootstrap.h"
 
+char *importsrc;
+char exitstr[100];
+
 /* FPSR STARTS HERE */
 
 int     currtoken;
@@ -162,9 +165,11 @@ lexer()
 
     else if(currtoken == '/'){
       if(*src == '*'){
-        while(!(*src == '*' && src[1] == '/')) ++src;
+        while(!(*src == '*' && src[1] == '/')){
+          if(*src == '\n') linenumber++;
+          ++src;
+        }
         src = src + 2;
-        printtxt(src, "SERIAL", 0, 0);
       }else{
         currtoken = Div;
         return;
@@ -827,10 +832,12 @@ statement()
 
   
   if(currtoken == If){
+    printtxt("Processing if statement..", "SERIAL", 0, 0);
     mvn(If);
     mvn('(');
     expression(Assign);
     mvn(')');
+    printtxt("Ready to get if statement body", "SERIAL", 0, 0);
     
     *++textsegment = BEQZ;
     opta = ++textsegment;
@@ -1304,8 +1311,10 @@ fpsr(char* srcstr, char* exitstr, int bpsize, int spsize)
 
   if ((textsegment = (int*)heapalloc(bpsize)) < 0) return -1;
   printtxt("All good", "SERIAL", 0, 0);
+  textsegment = textsegment + 5;
   if ((datasegment = (char*)heapalloc(bpsize)) < 0) return -1;
   printtxt("All good", "SERIAL", 0, 0);
+  datasegment = datasegment + 5;
   if ((stacksegment = (int*)heapalloc(spsize)) < 0) return -1;
   printtxt("All good", "SERIAL", 0, 0);
   if ((symboltable = (int*)heapalloc(spsize)) < 0) return -1;
@@ -1341,39 +1350,48 @@ fpsr(char* srcstr, char* exitstr, int bpsize, int spsize)
   }
 
   ret = execvm();
-  if(ret != 0)
+  if(ret != 0){
     printtxt((char*)ret, exitstr, 1, 100);
+    printtxt(exitstr, "SERIAL", 0, 0);
+    heapfree(ret);
+  } else *exitstr = 0;
   tftfill(0x0000);
+  printtxt("Getting ready to free larger chonks", "SERIAL", 0, 0);
 
   /*
    * if this is ever reached, free the heap-alloc'd stuff
    * and return out. This should get back to setup().
    */
-  heapfree(textsegment);
-  heapfree(datasegment);
-  heapfree(stacksegment);
-  heapfree(symboltable);
+  
   *srcstr = 0;
-  return ret;
+  heapfree((int)symboltable);
+  printtxt("FREE", "SERIAL", 0, 0);
+  
+  heapfree((int)stacksegment);
+  printtxt("FREE", "SERIAL", 0, 0);
+  
+  heapfree((int)datasegment);
+  printtxt("FREE", "SERIAL", 0, 0);
+
+  heapfree((int)textsegment);
+  printtxt("FREE", "SERIAL", 0, 0);
+  
+  if(*exitstr == 0) return 1;
+  else return 0;
 }
 
 
 void setup() {
-  char basevisor[500];
-  char exitstr[100];
-  char nsrc[5000];
   int rtstat;
-
+  
   *exitstr = 0;
   rtstat = 0;
-  bootstrap(basevisor, 500);
+  importsrc = (char*)heapalloc(5000);
+  bootstrap(importsrc, 5000);
   while(1){
-    if(!rtstat)
-      rtstat = fpsr(basevisor, exitstr, 20*1024, 10*1024);
-    else{
-      restrap(exitstr, nsrc, 5000);
-      rtstat = fpsr(nsrc, exitstr, 20*1024, 10*1024);
-    }  
+    rtstat = fpsr(importsrc, exitstr, FPSRALLOC, LITTLEFPSRALLOC);
+    *src = 0;
+    restrap(importsrc, exitstr, 5000, rtstat);
   }
 }
 

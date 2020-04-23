@@ -31,16 +31,19 @@ bootstrap(char* dbuffer, int sizeofdbuffer)
   }
 
   tftprint("Ready to go. DL'ing...\n");
-  httpget("game_name=test_1&host=1", "/sandbox/sc/team070/request_handler/request_handler.py",\
+  httpget("game_name=bootstrap&host=0", "/sandbox/sc/team070/request_handler/request_handler.py",\
       dbuffer, sizeofdbuffer);
+  tftprint("Done\n");
   return;
 }
 
 void
-restrap(char* srcurl, char* dbuffer, int sizeofdbuffer)
+restrap(char* srcurl, char* dbuffer, int sizeofdbuffer, int gohome)
 {
   tftprint("Ready to go. DL'ing...\n");
-  httpget(srcurl, "/sandbox/sc/team070/request_handler/request_handler.py",\
+  if(gohome) httpget("game_name=bootstrap&host=0", "/sandbox/sc/team070/request_handler/request_handler.py",\
+      dbuffer, sizeofdbuffer);
+  else httpget(srcurl, "/sandbox/sc/team070/request_handler/request_handler.py",\
       dbuffer, sizeofdbuffer);
   return;
 }

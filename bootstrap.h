@@ -17,10 +17,10 @@
 
 #define WIFISSID "deltanet2.4"
 #define PASSPHRASE "lanofthecats"
-#define FPSRALLOC 20*1024
-#define LITTLEFPSRALLOC 10*1024
+#define FPSRALLOC 60*1024
+#define LITTLEFPSRALLOC 25*1024
 
 void bootstrap(char* dbuffer, int sizeofdbuffer);
-void restrap(char* nsrc, char* dbuffer, int sizeofdbuffer);
+void restrap(char* srcurl, char* dbuffer, int sizeofdbuffer, int gohome);
 
 #endif /* bootstrap.h */

@@ -164,9 +164,10 @@ void
 httpget(char* input, char* serverpath, char* output, int sizeofoutput)
 {
   WiFiClient client;
-  int len, i;
+  int len, i, j, clen;
   byte buf[sizeofoutput];
 
+  client.setTimeout(10000);
   if(!client.connect("608dev-2.net", 80)){
     Serial.println("CONS FAILED");
     return;
@@ -178,20 +179,29 @@ httpget(char* input, char* serverpath, char* output, int sizeofoutput)
   client.println("Host: 608dev-2.net");
   client.println();
 
+  i = 0;
+  clen = 0;
   while (!client.available()) {}
-  len = client.available();
-  if(len >= sizeofoutput)
-    Serial.println("ERROR: BUFFER OVERFLOW POSSIBLE, MAKE YOUR OUTPUT ARRAY BIGGER");
-  
-  client.read(buf, len);
-  for (i = 0; i < len; i++)
-    output[i] = buf[i];
-    if(output[i] == '”' || output[i] == '“'){
-      output[i] = '"';
+  while(client.connected()){
+    len = client.available();
+    j = 0;
+    Serial.print("RUN LENGTH: ");
+    Serial.println(len);
+    clen += len;
+    if(clen >= sizeofoutput){
+      Serial.println("ERROR: BUFFER OVERFLOW POSSIBLE, MAKE YOUR OUTPUT ARRAY BIGGER");
+      Serial.print(clen);
+      Serial.print(" vs. ");
+      Serial.println(sizeofoutput);
     }
+    
+    client.read(buf, len);
+    while(j < len)
+      output[i++] = buf[j++];
+  }
 
-
-  output[len] = '\0';
+  output[clen] = '\0';
+  client.stop();
   Serial.println("Response is: ");
   Serial.println(output);
   return;

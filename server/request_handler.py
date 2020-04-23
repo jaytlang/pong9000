@@ -20,8 +20,8 @@ def request_handler(request):
 
         for i in range(0,len(things)):
             if things[i][2] not in response:
-                response.append(things[i][0])
                 response.append(things[i][2])
+                response.append(things[i][0])
         conn.commit()
         conn.close()
         return response

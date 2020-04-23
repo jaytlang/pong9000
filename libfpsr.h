@@ -81,6 +81,7 @@ void   heapfree(int ptr);
  *    more information about what is "done for you" see bootstrap.h.
  *    
  * REQS: Init is called for you. Change the rotation and call fill.
+ * TODO: tft.setCursor, tft.drawLine, tft.drawPixel (ask mary)
  */
 void  tftprint(char *toprint);
 void  tftrotation(int amt);
@@ -122,8 +123,15 @@ void httppost(char* input, char* serverpath, char* output, int sizeofoutput);
 /* Math
  * DESC: Supports sin and cos operations down to integer precision.
  *    Operates in degrees rounded off accordingly, from 0 to 90.
- *    TODO - see what Greg's using for now.
+ * TODO - see what Greg's using for now. Cosine, sine in degrees.
+ *    Need abs(), millis()
+ *    
  */
 
+
+/* OTHER COMMON OPERATIONS
+ *  Character -> Integer: 5 = '5' - '0'
+ *  Integer -> Character: make a 2 byte buffer, do printchr('c', buf, 2, 1); c = *buf;
+ */
 
 #endif /* libfpsr.h */
