@@ -1228,7 +1228,7 @@ execvm()
     else if(opcode == HALC)
       ax = (int)heapalloc(*sp); 
     else if(opcode == HFRE)
-      heapfree(ax);
+      heapfree((void*)ax);
     else if(opcode == MCMP)
       ax = memcmp((char*)sp[2], (char*)sp[1], *sp);
       
@@ -1308,18 +1308,37 @@ int
 fpsr(char* srcstr, char* exitstr, int bpsize, int spsize)
 {
   int *tmp, ret;
+  printtxt("Free heap space: ", "SERIAL", 0, 0);
+  printnum(ESP.getFreeHeap(), "SERIAL", 0, 0);
 
   if ((textsegment = (int*)heapalloc(bpsize)) < 0) return -1;
   printtxt("All good", "SERIAL", 0, 0);
-  textsegment = textsegment + 5;
   if ((datasegment = (char*)heapalloc(bpsize)) < 0) return -1;
   printtxt("All good", "SERIAL", 0, 0);
-  datasegment = datasegment + 5;
   if ((stacksegment = (int*)heapalloc(spsize)) < 0) return -1;
   printtxt("All good", "SERIAL", 0, 0);
   if ((symboltable = (int*)heapalloc(spsize)) < 0) return -1;
   printtxt("All good", "SERIAL", 0, 0);
   tftprint("Memory alloc all good\n");
+  
+  //printtxt("Free heap space: ", "SERIAL", 0, 0);
+  //printnum(ESP.getFreeHeap(), "SERIAL", 0, 0);
+  
+  //if(!heap_caps_check_integrity_all(1)) printtxt("Sad", "SERIAL", 0, 0);
+
+  heapfree(symboltable);
+  printtxt("FREE", "SERIAL", 0, 0);
+  
+  heapfree(stacksegment);
+  printtxt("FREE", "SERIAL", 0, 0);
+  
+  heapfree(textsegment);
+  printtxt("FREE", "SERIAL", 0, 0);
+  
+  heapfree(datasegment);
+  printtxt("FREE", "SERIAL", 0, 0);
+
+  delay(200000000);
   
   execprep();
 
@@ -1344,6 +1363,7 @@ fpsr(char* srcstr, char* exitstr, int bpsize, int spsize)
   parser();
   tftprint("Finding main\n");
 
+
   if (!(pc = (int*)mainptr[VALUE])) {
     printtxt("Main not defined!", "SERIAL", 0, 0);
     exit(-1);
@@ -1353,7 +1373,7 @@ fpsr(char* srcstr, char* exitstr, int bpsize, int spsize)
   if(ret != 0){
     printtxt((char*)ret, exitstr, 1, 100);
     printtxt(exitstr, "SERIAL", 0, 0);
-    heapfree(ret);
+    heapfree((void*)ret);
   } else *exitstr = 0;
   tftfill(0x0000);
   printtxt("Getting ready to free larger chonks", "SERIAL", 0, 0);
@@ -1364,16 +1384,16 @@ fpsr(char* srcstr, char* exitstr, int bpsize, int spsize)
    */
   
   *srcstr = 0;
-  heapfree((int)symboltable);
+  heapfree(symboltable);
   printtxt("FREE", "SERIAL", 0, 0);
   
-  heapfree((int)stacksegment);
+  heapfree(stacksegment);
   printtxt("FREE", "SERIAL", 0, 0);
   
-  heapfree((int)datasegment);
+  heapfree(datasegment);
   printtxt("FREE", "SERIAL", 0, 0);
 
-  heapfree((int)textsegment);
+  heapfree(textsegment);
   printtxt("FREE", "SERIAL", 0, 0);
   
   if(*exitstr == 0) return 1;

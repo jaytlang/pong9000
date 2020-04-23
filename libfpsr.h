@@ -66,7 +66,7 @@ int    printnum(const int value, char* dest, int sizedest, int flag);
  * REQS: None. Don't f it up, and please free.
  */
 void*  heapalloc(const int sizealloc);
-void   heapfree(int ptr);
+void   heapfree(void* ptr);
 
 /* TFT operations.
  * DESC: These largely shadow existing methods in the TFT library, sans

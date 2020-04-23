@@ -19,9 +19,9 @@ heapalloc(const int sizealloc)
 }
 
 void
-heapfree(int ptr)
+heapfree(void* ptr)
 {
-  free((void*)ptr);
+  free(ptr);
   return;
 }
 

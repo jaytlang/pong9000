@@ -9,9 +9,5 @@ EVERYTHING EXCEPT
     char *mystr;
     mystr = heapalloc(50*sizeof(char))
 
-
 CURRENTLY SUPPORTED FUNCTIONS / TO BE SUPPORTED
-- Server connections: httpget(), httppost()
-- String operations: use the printtxt, printchr, and printnum libraries
-- TFT drawing: greg's methods in the chat
-- Compile escape function to switch contexts
+***SEE LIBFPSR.h in the main directory
