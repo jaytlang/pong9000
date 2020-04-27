@@ -21,6 +21,8 @@
 #include <WiFi.h>
 #include <math.h>
 
+#define HOSTNAME "jaytlang"
+
 extern TFT_eSPI maintft;
 
 /* Printline.
@@ -133,5 +135,13 @@ void httppost(char* input, char* serverpath, char* output, int sizeofoutput);
  *  Character -> Integer: 5 = '5' - '0'
  *  Integer -> Character: make a 2 byte buffer, do printchr('c', buf, 2, 1); c = *buf;
  */
+
+
+/* Getting info about you!
+ *  DESC: Enables an ESP32 in the C runtime to figure out who
+ *     it is. Useful for the game browser, and maybe your games?
+ *  REQS: A heap-allocated buf to hold the result in.
+ */
+ void gethostname(char* buf, int sizeofbuf);
 
 #endif /* libfpsr.h */

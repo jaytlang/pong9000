@@ -3,10 +3,7 @@
  *  libfpsr.h. Ideally, the rest of the setup program is never reached.
  *  Preparation with issuing an instruction to compile and run via FPSR.
  *  
- *  Reentry():
- *  This is re-entered every time an application switch occurs. Called with the
- *  appropriate destination, this set of functions should load in the relevant dest
- *  and slate for runtime...
+ * 
  */
 
 #ifndef bootstrap_h
@@ -17,10 +14,12 @@
 
 #define WIFISSID "deltanet2.4"
 #define PASSPHRASE "lanofthecats"
-#define FPSRALLOC 60*1024
-#define LITTLEFPSRALLOC 25*1024
+#define FPSRALLOC 30*1024
+#define LITTLEFPSRALLOC 15*1024
+#define CODESIZE 5000
+
+#define REMOTE "/sandbox/sc/team070/request_handler/request_handler.py"
 
 void bootstrap(char* dbuffer, int sizeofdbuffer);
-void restrap(char* srcurl, char* dbuffer, int sizeofdbuffer, int gohome);
 
 #endif /* bootstrap.h */

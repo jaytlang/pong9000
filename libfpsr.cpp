@@ -165,13 +165,16 @@ httpget(char* input, char* serverpath, char* output, int sizeofoutput)
 {
   WiFiClient client;
   int len, i, j, clen;
-  byte buf[sizeofoutput];
+  byte *buf;
+
+  buf = (byte*)heapalloc(sizeofoutput);
 
   client.setTimeout(10000);
   if(!client.connect("608dev-2.net", 80)){
     Serial.println("CONS FAILED");
     return;
   }
+  Serial.println("Cons succeeded");
   client.print("GET ");
   client.print(serverpath);
   client.print("?");
@@ -204,6 +207,7 @@ httpget(char* input, char* serverpath, char* output, int sizeofoutput)
   client.stop();
   Serial.println("Response is: ");
   Serial.println(output);
+  heapfree(buf);
   return;
 }
 
@@ -212,7 +216,9 @@ httppost(char* input, char* serverpath, char* output, int sizeofoutput)
 {
   WiFiClient client;
   int len, i;
-  byte buf[sizeofoutput];
+  byte *buf;
+
+  buf = (byte*)heapalloc(sizeofoutput);
 
   len = strlen(input);
 
@@ -242,5 +248,13 @@ httppost(char* input, char* serverpath, char* output, int sizeofoutput)
     if(output[i] == '”' || output[i] == '“') output[i] = '"';
 
   output[len] = '\0';
+  heapfree(buf);
+  return;
+}
+
+void
+gethostname(char* buf, int sizeofbuf)
+{
+  printtxt(HOSTNAME, buf, sizeofbuf, 1);
   return;
 }

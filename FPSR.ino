@@ -59,7 +59,7 @@ enum{ LC, LI, LN, SC, SN, PSH, JMP, BEQZ, BNEZ, CALL, NFRM, \
       POP, RET, LEA, OR, XOR, AND, EQU, NEQ, LST, LEQ, GTT, \
       GEQ, SHL, SHR, ADD, SUB, MUL, DIV, MOD, EXIT, HALC, \
       HFRE, MCMP, PRTT, PRTC, PRTN, TPR, TROT, TTXC, TTXS, \
-      TFS, TDC, TDR, BTRD, GET, POST };
+      TFS, TDC, TDR, BTRD, GET, POST, HSTN };
       
 enum{ TOKEN, HASH, NAME, TYPE, CLASS, VALUE, STYPE, SCLASS, SVAL, IDSIZE };
 
@@ -1259,6 +1259,8 @@ execvm()
       httpget((char*)sp[3], (char*)sp[2], (char*)sp[1], *sp);
     else if(opcode == POST)
       httppost((char*)sp[3], (char*)sp[2], (char*)sp[1], *sp);
+    else if(opcode == HSTN)
+      gethostname((char*)sp[1], *sp);
       
     else{
       printtxt("Unknown instruction", "SERIAL", 0, 0);
@@ -1277,7 +1279,7 @@ execprep()
         "exit heapalloc heapfree memcmp printtxt printchr "
         "printnum tftprint tftrotation tfttextcolor "
         "tfttextsize tftfill tftdrawcircle tftdrawrect "
-        "buttonread httpget httppost void main";
+        "buttonread httpget httppost gethostname void main";
 
   i = Char;
   while(i <= While){
@@ -1286,7 +1288,7 @@ execprep()
   }
 
   i = EXIT;
-  while(i <= POST){
+  while(i <= HSTN){
     lexer();
     currentidentifier[CLASS] = Lib;
     currentidentifier[TYPE] = INT;
@@ -1305,11 +1307,10 @@ execprep()
 }
 
 int
-fpsr(char* srcstr, char* exitstr, int bpsize, int spsize)
+fpsr(char* srcstr, int bpsize, int spsize)
 {
   int *tmp, ret;
-  printtxt("Free heap space: ", "SERIAL", 0, 0);
-  printnum(ESP.getFreeHeap(), "SERIAL", 0, 0);
+  tftprint("Compile time!\n");
 
   if ((textsegment = (int*)heapalloc(bpsize)) < 0) return -1;
   printtxt("All good", "SERIAL", 0, 0);
@@ -1320,25 +1321,6 @@ fpsr(char* srcstr, char* exitstr, int bpsize, int spsize)
   if ((symboltable = (int*)heapalloc(spsize)) < 0) return -1;
   printtxt("All good", "SERIAL", 0, 0);
   tftprint("Memory alloc all good\n");
-  
-  //printtxt("Free heap space: ", "SERIAL", 0, 0);
-  //printnum(ESP.getFreeHeap(), "SERIAL", 0, 0);
-  
-  //if(!heap_caps_check_integrity_all(1)) printtxt("Sad", "SERIAL", 0, 0);
-
-  heapfree(symboltable);
-  printtxt("FREE", "SERIAL", 0, 0);
-  
-  heapfree(stacksegment);
-  printtxt("FREE", "SERIAL", 0, 0);
-  
-  heapfree(textsegment);
-  printtxt("FREE", "SERIAL", 0, 0);
-  
-  heapfree(datasegment);
-  printtxt("FREE", "SERIAL", 0, 0);
-
-  delay(200000000);
   
   execprep();
 
@@ -1363,56 +1345,23 @@ fpsr(char* srcstr, char* exitstr, int bpsize, int spsize)
   parser();
   tftprint("Finding main\n");
 
-
   if (!(pc = (int*)mainptr[VALUE])) {
     printtxt("Main not defined!", "SERIAL", 0, 0);
     exit(-1);
   }
 
-  ret = execvm();
-  if(ret != 0){
-    printtxt((char*)ret, exitstr, 1, 100);
-    printtxt(exitstr, "SERIAL", 0, 0);
-    heapfree((void*)ret);
-  } else *exitstr = 0;
-  tftfill(0x0000);
-  printtxt("Getting ready to free larger chonks", "SERIAL", 0, 0);
-
-  /*
-   * if this is ever reached, free the heap-alloc'd stuff
-   * and return out. This should get back to setup().
-   */
-  
-  *srcstr = 0;
-  heapfree(symboltable);
-  printtxt("FREE", "SERIAL", 0, 0);
-  
-  heapfree(stacksegment);
-  printtxt("FREE", "SERIAL", 0, 0);
-  
-  heapfree(datasegment);
-  printtxt("FREE", "SERIAL", 0, 0);
-
-  heapfree(textsegment);
-  printtxt("FREE", "SERIAL", 0, 0);
-  
-  if(*exitstr == 0) return 1;
-  else return 0;
+  return execvm();
 }
 
 
-void setup() {
-  int rtstat;
-  
-  *exitstr = 0;
-  rtstat = 0;
-  importsrc = (char*)heapalloc(5000);
-  bootstrap(importsrc, 5000);
-  while(1){
-    rtstat = fpsr(importsrc, exitstr, FPSRALLOC, LITTLEFPSRALLOC);
-    *src = 0;
-    restrap(importsrc, exitstr, 5000, rtstat);
-  }
+void
+setup() 
+{
+  int st;
+  importsrc = (char*)heapalloc(CODESIZE);
+  bootstrap(importsrc, CODESIZE);
+  st = fpsr(importsrc, FPSRALLOC, LITTLEFPSRALLOC);
+  if(st) ESP.restart();
 }
 
 void loop() {}

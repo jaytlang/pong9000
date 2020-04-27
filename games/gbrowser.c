@@ -5,25 +5,33 @@
  * a list of games and provides entry points to each
  */
 
-char *gameslist, *progress, *name, *host;
+char *gameslist, *game, *progress, *name, *host;
+
+void
+decorative()
+{
+    tftfill(0x0000);
+    tftprint("=== GAME BROWSER YEEET ===\n");
+    tftprint("--------------------------");
+    tftprint("\n\n\n");
+    tftprint("- A to proceed, B to run -\n");
+    tftprint("--------------------------\n\n\n");
+    return;
+}
 
 int
 gameshow()
 {
-    int ctr;
-
-    tftfill(0x0000);
+    decorative();
     *name = 0;
     *host = 0;
 
     /* host first */
     progress++;
-    ctr++;
 
     while(*progress != '\''){
         printchr(*progress, host, 50, 2);
         progress++;
-        ctr++;
     }
    
     tftprint("Host: ");
@@ -35,7 +43,6 @@ gameshow()
     while(*progress != '\''){
         printchr(*progress, name, 50, 2);
         progress++;
-        ctr++;
     }
 
     tftprint("Game: ");
@@ -47,15 +54,14 @@ gameshow()
     printtxt("Entering spin", "SERIAL", 0, 0);
     while(1){
         if(!buttonread(16)){
-             while(buttonread(16)){};    
-             return ctr;
+             while(!buttonread(16)){};    
+             return 1;
         }
         if(!buttonread(5)){
-            while(buttonread(5)){};
+            while(!buttonread(5)){};
             return 0;
         }
     } 
-    return ctr;
 }
 
 int
@@ -63,23 +69,27 @@ main()
 {
     int sstat, gameslistsize;
     
-    gameslistsize = 500;
+    gameslistsize = 7500;
+
     gameslist = (char*)heapalloc(gameslistsize);
     name = (char*)heapalloc(50);
     host = (char*)heapalloc(50);
 
+    tftprint("Loading...");
+
     httpget("what=whatever", "/sandbox/sc/team070/request_handler/request_handler.py", \
-        gameslist, 500);
+        gameslist, gameslistsize);
     
     printtxt(gameslist, "SERIAL", 0, 0); 
 
     progress = gameslist + 1;
-    sstat = 0;
+    sstat = 1;
     *host = 0; 
     *name = 0;
 
     while(1){
         /* increment */
+        if(sstat == -1) sstat = 1;
         if(*progress == ','){
             progress = progress + 2;
             printtxt("Comma things", "SERIAL", 0, 0);
@@ -96,25 +106,43 @@ main()
             sstat = -1;
         }
         /* run the game show. ret == 1 -> download */
-        if(sstat >= 0){
+        if(sstat == 1){
             printtxt("Showing game", "SERIAL", 0, 0);
             printtxt(progress, "SERIAL", 0, 0);
             sstat = gameshow();
-            if(!sstat){
-                /* co-opt the gameslist
-                 * this will get freed down the line
-                 */
-                printtxt("game_name=", gameslist, 500, 1);
-                printtxt(name, gameslist, 500, 2);
-                printtxt("&host=", gameslist, 500, 2);
-                printtxt(host, gameslist, 500, 2);
-                heapfree(name);
-                heapfree(host);
-                printtxt("Preparing to printout...", "SERIAL", 0, 0);
-                printtxt(gameslist, "SERIAL", 0, 0);
-                exit(gameslist);
-            }
-        } else sstat = 0;
+
+        }
+        if(sstat == 0){
+            tftfill(0x0000);
+            tftprint("== SETTING YOUR GAME UP ==");
+            tftprint("== Rebooting when done! ==\n\n");
+            tftprint("Downloading source...\n");
+
+            printtxt("game_name=", gameslist, gameslistsize, 1);
+            printtxt(name, gameslist, gameslistsize, 2);
+            printtxt("&host=", gameslist, gameslistsize, 2);
+            printtxt(host, gameslist, gameslistsize, 2);
+
+
+            game = (char*)heapalloc(gameslistsize);
+            httpget(gameslist, "/sandbox/sc/team070/request_handler/request_handler.py", \
+                game, gameslistsize);
+
+            tftprint("Installing...\n");
+            printtxt("game_name=", gameslist, gameslistsize, 1);
+            printtxt(name, gameslist, gameslistsize, 2);
+            printtxt("&host=", gameslist, gameslistsize, 2);
+            gethostname(host, 50);
+            printtxt(host, "SERIAL", 0, 0);
+            printtxt(host, gameslist, gameslistsize, 2);
+            printtxt("&game_code=", gameslist, gameslistsize, 2);
+            printtxt(game, gameslist, gameslistsize, 2);
+            *game = '\0';
+
+            httppost(gameslist, "/sandbox/sc/team070/request_handler/request_handler.py", \
+                game, gameslistsize);
+            exit(1);
+        }
     }
     return -1;
 }

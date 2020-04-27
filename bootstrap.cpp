@@ -5,7 +5,9 @@
 void
 bootstrap(char* dbuffer, int sizeofdbuffer)
 {
-  int cstat, ctr;
+  int cstat, ctr, tohost;
+  char gamename[100];
+  char tmp[500], *ptr;
 
   Serial.begin(115200);
   maintft.init();
@@ -30,20 +32,50 @@ bootstrap(char* dbuffer, int sizeofdbuffer)
     ESP.restart();
   }
 
-  tftprint("Ready to go. DL'ing...\n");
-  httpget("game_name=bootstrap&host=0", "/sandbox/sc/team070/request_handler/request_handler.py",\
-      dbuffer, sizeofdbuffer);
-  tftprint("Done\n");
-  return;
-}
+  tftprint("Getting game info...\n");
+  httpget("what=whatever", REMOTE, tmp, 500);
 
-void
-restrap(char* srcurl, char* dbuffer, int sizeofdbuffer, int gohome)
-{
-  tftprint("Ready to go. DL'ing...\n");
-  if(gohome) httpget("game_name=bootstrap&host=0", "/sandbox/sc/team070/request_handler/request_handler.py",\
-      dbuffer, sizeofdbuffer);
-  else httpget(srcurl, "/sandbox/sc/team070/request_handler/request_handler.py",\
-      dbuffer, sizeofdbuffer);
-  return;
+  *gamename = '\0';
+  ptr = strstr(tmp, HOSTNAME);
+  ptr += strlen(HOSTNAME) + 4;
+  while(*ptr != '\''){
+    Serial.print(*ptr);
+    printchr(*ptr, gamename, 100, 2);
+    ptr++;
+  }
+
+  tftprint("\n\nWelcome to P O N G 9 0 0 0\n\nSmashing stacks since 2020\n");
+  tftprint("--------------------------\n\n");
+  tftprint("You're currently playing: \n");
+  tftprint(gamename);
+  tftprint("\n\n\nPress A to JIT this game\nPress B to browse around\n");
+
+  while(1){
+    if(!buttonread(16)){
+      tohost = 1; break;
+    }
+    else if(!buttonread(5)){
+      tohost = 0; break;
+    }
+  }
+  tftfill(0x0000);
+  
+  if(tohost){
+    tftprint("Downloading remote code..\n");
+    Serial.println();
+    Serial.print("Game: ");
+    Serial.println(gamename);
+    printtxt("game_name=", tmp, 500, 1);
+    printtxt(gamename, tmp, 500, 2);
+    printtxt("&host=", tmp, 500, 2);
+    printtxt(HOSTNAME, tmp, 500, 2);
+    httpget(tmp, REMOTE, dbuffer, sizeofdbuffer);
+    return;
+  }
+  else{
+    tftprint("Downloading the browser...\n");
+    httpget("game_name=bootstrap&host=0", REMOTE, dbuffer, sizeofdbuffer);
+    return; 
+  }
+    
 }
