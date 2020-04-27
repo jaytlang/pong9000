@@ -1,36 +1,36 @@
 # Server side operations: a summary
 
-GET request for game data
-    *name (what is the game name?)
-    *host (who is the host?)
-	*player (player 1 or player 2)
-	*returns most recent game data (only if the player is not the one who posted last)
+*TL;DR, post your game code [here](https://web.mit.edu/jaytlang/postcode/)*
 
-POST request for game data (USES BODY)
-	*MUST input 5 variables, each labeled variable_1 to variable_5
-	*host (who is the host?)
-	*name (what is the game name?)
-	*player (who is the player?)
-	*returns the most recent data where the player didn't post (for the moment)
+Our server architecture is fairly unique, in that each game on the server is associated with a specific hostname. Concurrently, each arduino has a hard-coded hostname, and software like the browser references this name when deciding which games to obtain. So, a lot of these calls feature `host` parameters - one can think of these as pointers to fellow peers on the net, and you can use these pointers to perform a variety of operations both in and out of the game sandbox. Examples are shown below.
 
-GET request for game code
-	*game_name (NOT name! Used to differentiate between code and game)
-	*host (who is the host?)
-    *returns the most recent game code
+## Retrieving and posting game data
+Game data is stored on the server as tuples of length 5, representing a set of game-specific variables tweakable per implementation. You can `GET` or `POST` to mutate these variables, as follows:
 
-POST request for game code (USES BODY)
-	*game_name (what is the game's name?)
-	*game_code (insert game code here)
-	*host (who is the host)
-	*returns the most recent post(for the moment)
+```
+GET(name, host, playernumber) => most recent game data, given game name
+POST(variable[i] for i in range(5), host, name, playernumber)
+```
 
-GET request for game name and host
-	*what (value doesn't matter in the slightest)
-	*returns the most recent games each host is playing
+Here, `name` represents the game name in question. This uses a different definition than the `game_name` identifier used to extract game code for the JIT, as shown below:
 
-POST request for reset
-	*reset (value is whatever your heart desires)
-	*host (who is the host you're resetting?)
-    *returns "done" -- not usually invoked by an ESP32 so this is fine
-	
+## Retrieving and posting game code
+
+Getting/Posting code is done frequently within the JIT environment to set up game runtimes. The API for this is straightforward - note that `game_name` is used in code-related identification
+
+```
+GET(game_name, host) => game code
+POST(game_name, host, game_code)
+```
+## Other operations
+
+As used in the browser, and frequently for debugging the API, one can obtain a host-game mapping that accurately reflects the database state with a generic GET request:
+```
+GET() => game-host mapping for all hosts
+```
+
+Resetting a host to contain no code can be done with the following POST, though this isn't often used nor recommended:
+```
+POST(reset=*, host) => triggers a game reset, returns 'Done resetting!'
+```
 
