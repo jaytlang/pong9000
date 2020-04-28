@@ -137,11 +137,20 @@ void httppost(char* input, char* serverpath, char* output, int sizeofoutput);
  */
 
 
-/* Getting info about you!
+/* Hostname operations.
  *  DESC: Enables an ESP32 in the C runtime to figure out who
- *     it is. Useful for the game browser, and maybe your games?
+ *     it is. Highly useful regardless of context.
+ *     
+ *     Additionaly, one can use updatehostname() to alias your hostname
+ *     to someone else's. This enables you to download a game running
+ *     on their server and masquerade in order to achieve proper database
+ *     semantics and enable multiplayer.. Use of this call in the true game 
+ *     environment is highly discouraged and will likely be disabled in 
+ *     a further push.
+ *     
  *  REQS: A heap-allocated buf to hold the result in.
  */
  void gethostname(char* buf, int sizeofbuf);
+ void updatehostname(char* buf, int sizeofbuf);
 
 #endif /* libfpsr.h */

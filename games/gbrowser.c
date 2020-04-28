@@ -5,7 +5,7 @@
  * a list of games and provides entry points to each
  */
 
-char *gameslist, *game, *progress, *name, *host;
+char *gameslist, *progress, *name, *host;
 
 void
 decorative()
@@ -116,31 +116,9 @@ main()
             tftfill(0x0000);
             tftprint("== SETTING YOUR GAME UP ==");
             tftprint("== Rebooting when done! ==\n\n");
-            tftprint("Downloading source...\n");
+            tftprint("Realiasing hostname...\n");
 
-            printtxt("game_name=", gameslist, gameslistsize, 1);
-            printtxt(name, gameslist, gameslistsize, 2);
-            printtxt("&host=", gameslist, gameslistsize, 2);
-            printtxt(host, gameslist, gameslistsize, 2);
-
-
-            game = (char*)heapalloc(gameslistsize);
-            httpget(gameslist, "/sandbox/sc/team070/request_handler/request_handler.py", \
-                game, gameslistsize);
-
-            tftprint("Installing...\n");
-            printtxt("game_name=", gameslist, gameslistsize, 1);
-            printtxt(name, gameslist, gameslistsize, 2);
-            printtxt("&host=", gameslist, gameslistsize, 2);
-            gethostname(host, 50);
-            printtxt(host, "SERIAL", 0, 0);
-            printtxt(host, gameslist, gameslistsize, 2);
-            printtxt("&game_code=", gameslist, gameslistsize, 2);
-            printtxt(game, gameslist, gameslistsize, 2);
-            *game = '\0';
-
-            httppost(gameslist, "/sandbox/sc/team070/request_handler/request_handler.py", \
-                game, gameslistsize);
+            updatehostname(host, 50);
             exit(1);
         }
     }

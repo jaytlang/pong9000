@@ -7,7 +7,7 @@ bootstrap(char* dbuffer, int sizeofdbuffer)
 {
   int cstat, ctr, tohost;
   char gamename[100];
-  char tmp[500], *ptr;
+  char tmp[500], myhost[50], *ptr;
 
   Serial.begin(115200);
   maintft.init();
@@ -32,12 +32,18 @@ bootstrap(char* dbuffer, int sizeofdbuffer)
     ESP.restart();
   }
 
+  gethostname(myhost, 50);
+  Serial.println(myhost);
+
   tftprint("Getting game info...\n");
   httpget("what=whatever", REMOTE, tmp, 500);
 
   *gamename = '\0';
-  ptr = strstr(tmp, HOSTNAME);
-  ptr += strlen(HOSTNAME) + 4;
+  if((ptr = strstr(tmp, myhost)) == NULL){
+    Serial.println("Couldn't find any hosted games!");
+    while(1);
+  }
+  ptr += strlen(myhost) + 4;
   while(*ptr != '\''){
     Serial.print(*ptr);
     printchr(*ptr, gamename, 100, 2);
@@ -68,11 +74,13 @@ bootstrap(char* dbuffer, int sizeofdbuffer)
     printtxt("game_name=", tmp, 500, 1);
     printtxt(gamename, tmp, 500, 2);
     printtxt("&host=", tmp, 500, 2);
-    printtxt(HOSTNAME, tmp, 500, 2);
+    printtxt(myhost, tmp, 500, 2);
     httpget(tmp, REMOTE, dbuffer, sizeofdbuffer);
     return;
   }
   else{
+    tftprint("De-aliasing hostname...\n");
+    updatehostname(HOSTNAME, 50);
     tftprint("Downloading the browser...\n");
     httpget("game_name=bootstrap&host=0", REMOTE, dbuffer, sizeofdbuffer);
     return; 

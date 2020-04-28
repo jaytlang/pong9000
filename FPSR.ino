@@ -59,7 +59,7 @@ enum{ LC, LI, LN, SC, SN, PSH, JMP, BEQZ, BNEZ, CALL, NFRM, \
       POP, RET, LEA, OR, XOR, AND, EQU, NEQ, LST, LEQ, GTT, \
       GEQ, SHL, SHR, ADD, SUB, MUL, DIV, MOD, EXIT, HALC, \
       HFRE, MCMP, PRTT, PRTC, PRTN, TPR, TROT, TTXC, TTXS, \
-      TFS, TDC, TDR, BTRD, GET, POST, HSTN };
+      TFS, TDC, TDR, BTRD, GET, POST, HSTN, SHST };
       
 enum{ TOKEN, HASH, NAME, TYPE, CLASS, VALUE, STYPE, SCLASS, SVAL, IDSIZE };
 
@@ -1261,6 +1261,8 @@ execvm()
       httppost((char*)sp[3], (char*)sp[2], (char*)sp[1], *sp);
     else if(opcode == HSTN)
       gethostname((char*)sp[1], *sp);
+    else if(opcode == SHST)
+      updatehostname((char*)sp[1], *sp);
       
     else{
       printtxt("Unknown instruction", "SERIAL", 0, 0);
@@ -1279,7 +1281,7 @@ execprep()
         "exit heapalloc heapfree memcmp printtxt printchr "
         "printnum tftprint tftrotation tfttextcolor "
         "tfttextsize tftfill tftdrawcircle tftdrawrect "
-        "buttonread httpget httppost gethostname void main";
+        "buttonread httpget httppost gethostname updatehostname void main";
 
   i = Char;
   while(i <= While){
@@ -1288,7 +1290,7 @@ execprep()
   }
 
   i = EXIT;
-  while(i <= HSTN){
+  while(i <= SHST){
     lexer();
     currentidentifier[CLASS] = Lib;
     currentidentifier[TYPE] = INT;

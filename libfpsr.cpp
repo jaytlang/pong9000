@@ -192,7 +192,7 @@ httpget(char* input, char* serverpath, char* output, int sizeofoutput)
     Serial.println(len);
     clen += len;
     if(clen >= sizeofoutput){
-      Serial.println("ERROR: BUFFER OVERFLOW POSSIBLE, MAKE YOUR OUTPUT ARRAY BIGGER");
+      Serial.println("REQUEST ERROR: BUFFER OVERFLOW POSSIBLE, MAKE YOUR OUTPUT ARRAY BIGGER");
       Serial.print(clen);
       Serial.print(" vs. ");
       Serial.println(sizeofoutput);
@@ -203,7 +203,7 @@ httpget(char* input, char* serverpath, char* output, int sizeofoutput)
       output[i++] = buf[j++];
   }
 
-  output[clen] = '\0';
+  output[clen-1] = '\0';
   client.stop();
   Serial.println("Response is: ");
   Serial.println(output);
@@ -240,21 +240,40 @@ httppost(char* input, char* serverpath, char* output, int sizeofoutput)
   while (!client.available()) {}
   len = client.available();
   if(len >= sizeofoutput)
-    Serial.println("ERROR: BUFFER OVERFLOW POSSIBLE, MAKE YOUR OUTPUT ARRAY BIGGER");
+    Serial.println("REQUEST ERROR: BUFFER OVERFLOW POSSIBLE, MAKE YOUR OUTPUT ARRAY BIGGER");
   
   client.read(buf, len);
   for (i = 0; i < len; i++)
     output[i] = buf[i];
     if(output[i] == '”' || output[i] == '“') output[i] = '"';
 
-  output[len] = '\0';
+  output[len-1] = '\0';
+  Serial.println("Response is: ");
+  Serial.println(output);
   heapfree(buf);
   return;
 }
 
 void
-gethostname(char* buf, int sizeofbuf)
+gethostname(char *buf, int sizeofbuf)
 {
-  printtxt(HOSTNAME, buf, sizeofbuf, 1);
+  char currenthost[60];
+
+  printtxt("abshost=", currenthost, 60, 1);
+  printtxt(HOSTNAME, currenthost, 60, 2);
+  httpget(currenthost, "/sandbox/sc/team070/request_handler/host_handler.py", buf, sizeofbuf);
+  return;
+}
+
+void
+updatehostname(char* buf, int sizeofbuf)
+{
+  char toset[500];
+
+  printtxt("abshost=", toset, 500, 1);
+  printtxt(HOSTNAME, toset, 500, 2);
+  printtxt("&relhost=", toset, 500, 2);
+  printtxt(buf, toset, 500, 2);
+  httppost(toset, "/sandbox/sc/team070/request_handler/host_handler.py", toset, 500);
   return;
 }
