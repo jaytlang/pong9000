@@ -79,8 +79,6 @@ bootstrap(char* dbuffer, int sizeofdbuffer)
     return;
   }
   else{
-    tftprint("De-aliasing hostname...\n");
-    updatehostname(HOSTNAME, 50);
     tftprint("Downloading the browser...\n");
     httpget("game_name=bootstrap&host=0", REMOTE, dbuffer, sizeofdbuffer);
     return; 
