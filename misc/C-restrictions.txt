@@ -7,7 +7,7 @@ EVERYTHING EXCEPT
 - switch statements
 - char mystr[50] = "....", use this instead
     char *mystr;
-    mystr = heapalloc(50*sizeof(char))
+    mystr = (char*)heapalloc(50*sizeof(char))
 
 CURRENTLY SUPPORTED FUNCTIONS / TO BE SUPPORTED
 ***SEE LIBFPSR.h in the main directory
