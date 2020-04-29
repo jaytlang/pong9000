@@ -10,6 +10,7 @@ EVERYTHING EXCEPT
 - char mystr[50] = "....", use this instead
     char *mystr;
     mystr = (char*)heapalloc(50*sizeof(char))
+- group assignments of arrays with {} don't work, use a while loop
 
 CURRENTLY SUPPORTED FUNCTIONS / TO BE SUPPORTED
 ***SEE LIBFPSR.h in the main directory
