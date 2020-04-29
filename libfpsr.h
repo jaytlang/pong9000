@@ -151,15 +151,17 @@ void  httpget(char* input, char* serverpath, char* output, int sizeofoutput);
 void  httppost(char* input, char* serverpath, char* output, int sizeofoutput);
 
 /* Math
- * DESC: The absvalue function returns the absolute value of your input.
- *    The cosine function takes input in degress and returns the cos value * 1000.
- *    The sine function takes input in degrees and returns the sin value * 1000.
+ * DESC: Basic math features you would expect from math.h, but integer
+ *    only. Cosine and sine accept angles in degrees and give you
+ *    results scaled by a factor of 1000. Abs does what you think
+ *    it does, and sqrt will round off per C typecast rules.
  *        
- * REQS: None.    
+ * REQS: Take scaling into account in game code!   
  */
 int   absvalue(int input);
 int   cosine(int angle);
 int   sine(int angle);
+int   root(int input);
 
 
 /* Other common operations

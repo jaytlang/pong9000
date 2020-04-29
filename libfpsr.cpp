@@ -365,3 +365,9 @@ sine(int angle)
 {
   return sin(angle * PI / 180) * 1000;
 }
+
+int
+root(int input)
+{
+  return (int)sqrt(input);
+}
