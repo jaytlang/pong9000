@@ -20,10 +20,12 @@
 #include <SPI.h>
 #include <WiFi.h>
 #include <math.h>
+#include <mpu6050_esp32.h>
 
-#define HOSTNAME "jaytlang"
+#define HOSTNAME "2"
 
 extern TFT_eSPI maintft;
+extern MPU6050 mainimu;
 
 /* Printline.
  *  DESC: Interfaces with Serial and prints to monitor, or other strings. 
@@ -83,15 +85,35 @@ void   heapfree(void* ptr);
  *    more information about what is "done for you" see bootstrap.h.
  *    
  * REQS: Init is called for you. Change the rotation and call fill.
- * TODO: tft.setCursor, tft.drawLine, tft.drawPixel (ask mary)
  */
 void  tftprint(char *toprint);
 void  tftrotation(int amt);
 void  tfttextcolor(int foreground, int background);
 void  tfttextsize(int sz);
-void  tftfill(int color);
+
 void  tftdrawcircle(int xcoord, int ycoord, int radius, int color);
 void  tftdrawrect(int xcoord, int ycoord, int w, int h, int color);
+void  tftdrawline(int xs, int ys, int xe, int ye, int color);
+void  tftdrawpixel(int xcoord, int ycoord, int color);
+
+void  tftfill(int color);
+void  tftfillcircle(int xcoord, int ycoord, int radius, int color);
+void  tftfillrect(int xcoord, int ycoord, int w, int h, int color);
+
+void  tftsetcursor(int xcoord, int ycoord);
+
+/* MPU6050 operations.
+ * DESC: These shadow existing MPU6050 library calls.
+ *    The imureadaccel function takes in a pointer to destination 
+ *    buffer of length 3, corresponding to x, y, and z acceleration values. 
+ *    These are scaled by a factor of 1000 from our float values in-class,
+ *    and multiplied by the IMU acceleration resolution (which is refreshed
+ *    automatically). Thus, the most accurate integer approximation
+ *    is obtained.
+ *    
+ * REQS: Take this scaling into account when coding your game!
+ */
+void  imureadaccel(int *intbuf);
 
 /* Button reading
  * DESC: Exactly what you think it is. Returns active low.
@@ -119,22 +141,29 @@ int   buttonread(int pin);
  * REQS: Specify a destination, and talk to Jessie / make sure it's
  *    hooked into the server to give you reasonable feedback.
  */
-void httpget(char* input, char* serverpath, char* output, int sizeofoutput);
-void httppost(char* input, char* serverpath, char* output, int sizeofoutput);
+void  httpget(char* input, char* serverpath, char* output, int sizeofoutput);
+void  httppost(char* input, char* serverpath, char* output, int sizeofoutput);
 
 /* Math
- * DESC: Supports sin and cos operations down to integer precision.
- *    Operates in degrees rounded off accordingly, from 0 to 90.
- * TODO - see what Greg's using for now. Cosine, sine in degrees.
- *    Need abs(), millis()
+ * DESC: The absvalue function returns the absolute value of your input.
+ *    The cosine function takes input in degress and returns the cos value * 1000.
+ *    The sine function takes input in degrees and returns the sin value * 1000.
+ *        
+ * REQS: None.    
+ */
+int   absvalue(int input);
+int   cosine(int angle);
+int   sine(int angle);
+
+
+/* Other common operations
+ * DESC: These are simple -- too simple to warrant their own section.
+ *    getmillis() returns exactly what you think it does...more functions
+ *    to come down the road!
  *    
+ * REQS: None.
  */
-
-
-/* OTHER COMMON OPERATIONS
- *  Character -> Integer: 5 = '5' - '0'
- *  Integer -> Character: make a 2 byte buffer, do printchr('c', buf, 2, 1); c = *buf;
- */
+int   getmillis();
 
 
 /* Hostname operations.
@@ -150,7 +179,7 @@ void httppost(char* input, char* serverpath, char* output, int sizeofoutput);
  *     
  *  REQS: A heap-allocated buf to hold the result in.
  */
- void gethostname(char* buf, int sizeofbuf);
- void updatehostname(char* buf, int sizeofbuf);
+void  gethostname(char* buf, int sizeofbuf);
+void  updatehostname(char* buf, int sizeofbuf);
 
 #endif /* libfpsr.h */

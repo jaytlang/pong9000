@@ -59,8 +59,9 @@ enum{ LC, LI, LN, SC, SN, PSH, JMP, BEQZ, BNEZ, CALL, NFRM, \
       POP, RET, LEA, OR, XOR, AND, EQU, NEQ, LST, LEQ, GTT, \
       GEQ, SHL, SHR, ADD, SUB, MUL, DIV, MOD, EXIT, HALC, \
       HFRE, MCMP, PRTT, PRTC, PRTN, TPR, TROT, TTXC, TTXS, \
-      TFS, TDC, TDR, BTRD, GET, POST, HSTN, SHST };
-      
+      TFS, TDC, TDR, BTRD, GET, POST, HSTN, SHST, MILS, ABS, \
+      COS, SIN, TDL, TDP, TFC, TSCU, IRA, TFR };
+
 enum{ TOKEN, HASH, NAME, TYPE, CLASS, VALUE, STYPE, SCLASS, SVAL, IDSIZE };
 
 enum{ Num = 128, Fun, Lib, Glo, Loc, Id, \
@@ -1263,7 +1264,27 @@ execvm()
       gethostname((char*)sp[1], *sp);
     else if(opcode == SHST)
       updatehostname((char*)sp[1], *sp);
-      
+    else if(opcode == MILS)
+      ax = getmillis();
+    else if(opcode == ABS)
+      ax = absvalue(*sp);
+    else if(opcode == COS)
+      ax = cosine(*sp);
+    else if(opcode == SIN)
+      ax = sine(*sp);
+    else if(opcode == TDL)
+      tftdrawline(sp[4], sp[3], sp[2], sp[1], *sp);
+    else if(opcode == TDP)
+      tftdrawpixel(sp[2], sp[1], *sp);
+    else if(opcode == TFC)
+      tftfillcircle(sp[3], sp[2], sp[1], *sp);
+    else if(opcode == TSCU)
+      tftsetcursor(sp[1], *sp);
+    else if(opcode == IRA)
+      imureadaccel((int*)*sp);
+    else if(opcode == TFR)
+      tftfillrect(sp[4], sp[3], sp[2], sp[1], *sp);
+
     else{
       printtxt("Unknown instruction", "SERIAL", 0, 0);
       printnum(opcode, "SERIAL", 0, 0);
@@ -1281,7 +1302,10 @@ execprep()
         "exit heapalloc heapfree memcmp printtxt printchr "
         "printnum tftprint tftrotation tfttextcolor "
         "tfttextsize tftfill tftdrawcircle tftdrawrect "
-        "buttonread httpget httppost gethostname updatehostname void main";
+        "buttonread httpget httppost gethostname updatehostname "
+        "getmillis absvalue cosine sine tftdrawline "
+        "tftdrawpixel tftfillcircle tftsetcursor imureadaccel "
+        "tftfillrect void main";
 
   i = Char;
   while(i <= While){
@@ -1290,7 +1314,7 @@ execprep()
   }
 
   i = EXIT;
-  while(i <= SHST){
+  while(i <= TFR){
     lexer();
     currentidentifier[CLASS] = Lib;
     currentidentifier[TYPE] = INT;

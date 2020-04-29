@@ -19,7 +19,7 @@ bootstrap(char* dbuffer, int sizeofdbuffer)
 
   cstat = 0;
   WiFi.begin(WIFISSID, PASSPHRASE);
-  for(ctr = 0; ctr <= 5; ctr++){
+  for(ctr = 0; ctr <= 20; ctr++){
     if(WiFi.isConnected()){
       cstat = 1;
       break;

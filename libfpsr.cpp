@@ -3,6 +3,7 @@
 #include "libfpsr.h"
 
 TFT_eSPI maintft = TFT_eSPI();
+MPU6050 mainimu;
 
 void*
 heapalloc(const int sizealloc)
@@ -150,6 +151,54 @@ tftdrawrect(int xcoord, int ycoord, int w, int h, int color)
   return;
 }
 
+void  
+tftdrawline(int xs, int ys, int xe, int ye, int color)
+{
+  maintft.drawLine(xs, ys, xe, ye, color);
+  return;
+}
+
+void 
+tftdrawpixel(int xcoord, int ycoord, int color)
+{
+  maintft.drawPixel(xcoord, ycoord, color);
+  return;
+}
+
+void  
+tftfillcircle(int xcoord, int ycoord, int radius, int color)
+{
+  maintft.fillCircle(xcoord, ycoord, radius, color);
+  return;
+}
+
+void
+tftfillrect(int xcoord, int ycoord, int w, int h, int color)
+{
+  maintft.fillRect(xcoord, ycoord, w, h, color);
+  return;
+}
+
+void  
+tftsetcursor(int xcoord, int ycoord)
+{
+  maintft.setCursor(xcoord, ycoord);
+  return;
+}
+
+void  
+imureadaccel(int *intbuf)
+{
+  int i;
+  
+  mainimu.getAres();
+  mainimu.readAccelData(mainimu.accelCount);
+  for(i = 0; i < 3; i++){
+    intbuf[i] = mainimu.accelCount[i] * mainimu.aRes * 1000;
+  }
+  return;
+}
+
 int
 buttonread(int pin)
 {
@@ -276,4 +325,29 @@ updatehostname(char* buf, int sizeofbuf)
   printtxt(buf, toset, 500, 2);
   httppost(toset, "/sandbox/sc/team070/request_handler/host_handler.py", toset, 500);
   return;
+}
+
+int
+getmillis()
+{
+  return millis();
+}
+
+int
+absvalue(int input)
+{
+  if(input >= 0) return input;
+  else return -1 * input;
+}
+
+int   
+cosine(int angle)
+{
+  return cos(angle * PI / 180) * 1000;
+}
+
+int   
+sine(int angle)
+{
+  return sin(angle * PI / 180) * 1000;
 }
