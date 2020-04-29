@@ -140,6 +140,9 @@ int   buttonread(int pin);
  *    tweak the call to fpsr to minimize the required space. When
  *    fpsr gives you a cryptic error or crashes, not enough space
  *    allocated is to blame (assuming you've tested your code)
+ *
+ *    These semantics can be mildly confusing. An example is:
+ *    httpget("myvar=1&ur=mom", "/sandbox/sc/myendpoint.py", outbuf, sizeofoutbuf);
  *    
  * REQS: Specify a destination, and talk to Jessie / make sure it's
  *    hooked into the server to give you reasonable feedback.
