@@ -186,6 +186,20 @@ tftsetcursor(int xcoord, int ycoord)
   return;
 }
 
+void
+tftdrawellipse(int xcoord, int ycoord, int w, int h, int color)
+{
+  maintft.drawEllipse(xcoord, ycoord, w, h, color);
+  return;
+}
+
+void
+tftfillellipse(int xcoord, int ycoord, int w, int h, int color)
+{
+  maintft.fillEllipse(xcoord, ycoord, w, h, color);
+  return;
+}
+
 void  
 imureadaccel(int *intbuf)
 {

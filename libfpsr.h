@@ -22,7 +22,7 @@
 #include <math.h>
 #include <mpu6050_esp32.h>
 
-#define HOSTNAME "2"
+#define HOSTNAME "jaytlang"
 
 extern TFT_eSPI maintft;
 extern MPU6050 mainimu;
@@ -92,6 +92,7 @@ void  tfttextcolor(int foreground, int background);
 void  tfttextsize(int sz);
 
 void  tftdrawcircle(int xcoord, int ycoord, int radius, int color);
+void  tftdrawellipse(int xcoord, int ycoord, int w, int h, int color);
 void  tftdrawrect(int xcoord, int ycoord, int w, int h, int color);
 void  tftdrawline(int xs, int ys, int xe, int ye, int color);
 void  tftdrawpixel(int xcoord, int ycoord, int color);
@@ -99,6 +100,8 @@ void  tftdrawpixel(int xcoord, int ycoord, int color);
 void  tftfill(int color);
 void  tftfillcircle(int xcoord, int ycoord, int radius, int color);
 void  tftfillrect(int xcoord, int ycoord, int w, int h, int color);
+void  tftfillellipse(int xcoord, int ycoord, int w, int h, int color);
+
 
 void  tftsetcursor(int xcoord, int ycoord);
 

@@ -12,8 +12,8 @@
 #include "libfpsr.h"
 #include "testbench.h"
 
-#define WIFISSID "_VelopSetup7CC"
-#define PASSPHRASE "660uxpv4bu"
+#define WIFISSID "deltanet2.4"
+#define PASSPHRASE "lanofthecats"
 #define FPSRALLOC 30*1024
 #define LITTLEFPSRALLOC 15*1024
 #define CODESIZE 5000

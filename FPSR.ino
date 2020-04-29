@@ -60,7 +60,7 @@ enum{ LC, LI, LN, SC, SN, PSH, JMP, BEQZ, BNEZ, CALL, NFRM, \
       GEQ, SHL, SHR, ADD, SUB, MUL, DIV, MOD, EXIT, HALC, \
       HFRE, MCMP, PRTT, PRTC, PRTN, TPR, TROT, TTXC, TTXS, \
       TFS, TDC, TDR, BTRD, GET, POST, HSTN, SHST, MILS, ABS, \
-      COS, SIN, TDL, TDP, TFC, TSCU, IRA, TFR };
+      COS, SIN, TDL, TDP, TFC, TSCU, IRA, TFR, TDE, TFE };
 
 enum{ TOKEN, HASH, NAME, TYPE, CLASS, VALUE, STYPE, SCLASS, SVAL, IDSIZE };
 
@@ -1284,6 +1284,10 @@ execvm()
       imureadaccel((int*)*sp);
     else if(opcode == TFR)
       tftfillrect(sp[4], sp[3], sp[2], sp[1], *sp);
+    else if(opcode == TDE)
+      tftdrawellipse(sp[4], sp[3], sp[2], sp[1], *sp);
+    else if(opcode == TFE)
+      tftfillellipse(sp[4], sp[3], sp[2], sp[1], *sp);
 
     else{
       printtxt("Unknown instruction", "SERIAL", 0, 0);
@@ -1305,7 +1309,7 @@ execprep()
         "buttonread httpget httppost gethostname updatehostname "
         "getmillis absvalue cosine sine tftdrawline "
         "tftdrawpixel tftfillcircle tftsetcursor imureadaccel "
-        "tftfillrect void main";
+        "tftfillrect tftdrawellipse tftfillellipse void main";
 
   i = Char;
   while(i <= While){
@@ -1314,7 +1318,7 @@ execprep()
   }
 
   i = EXIT;
-  while(i <= TFR){
+  while(i <= TFE){
     lexer();
     currentidentifier[CLASS] = Lib;
     currentidentifier[TYPE] = INT;
