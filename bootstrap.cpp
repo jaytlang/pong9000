@@ -15,6 +15,10 @@ bootstrap(char* dbuffer, int sizeofdbuffer)
   pinMode(16, INPUT_PULLUP);
   pinMode(5, INPUT_PULLUP);
   tftfill(0x000);
+  if(!mainimu.setupIMU(1)){
+    Serial.println("IMU not reachable.");
+    ESP.restart(); // restart the ESP (proper way)
+  }
   tftprint("Hello\nConnecting to Wifi...\n");
 
   cstat = 0;
