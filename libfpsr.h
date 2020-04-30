@@ -22,7 +22,7 @@
 #include <math.h>
 #include <mpu6050_esp32.h>
 
-#define HOSTNAME "jaytlang"
+#define HOSTNAME "gregpete"
 
 extern TFT_eSPI maintft;
 extern MPU6050 mainimu;
