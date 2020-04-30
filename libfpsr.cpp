@@ -372,8 +372,8 @@ root(int input)
   return (int)sqrt(input);
 }
 
-char*
-strtalk(char *str, char *delim, int isnull)
+int
+atoi(char *str)
 {
-    return (isnull) ? strtok(NULL, delim) : strtok(str, delim);
+    return atoi(str);
 }

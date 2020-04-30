@@ -16,7 +16,7 @@
 #define PASSPHRASE "lanofthecats"
 #define FPSRALLOC 30*1024
 #define LITTLEFPSRALLOC 15*1024
-#define CODESIZE 20000
+#define CODESIZE 22000
 
 #define REMOTE "/sandbox/sc/team070/request_handler/request_handler.py"
 

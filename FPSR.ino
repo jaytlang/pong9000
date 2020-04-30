@@ -61,7 +61,7 @@ enum{ LC, LI, LN, SC, SN, PSH, JMP, BEQZ, BNEZ, CALL, NFRM, \
       HFRE, MCMP, PRTT, PRTC, PRTN, TPR, TROT, TTXC, TTXS, \
       TFS, TDC, TDR, BTRD, GET, POST, HSTN, SHST, MILS, ABS, \
       COS, SIN, TDL, TDP, TFC, TSCU, IRA, TFR, TDE, TFE, SQRT,
-      STOK };
+      ATOI };
 
 enum{ TOKEN, HASH, NAME, TYPE, CLASS, VALUE, STYPE, SCLASS, SVAL, IDSIZE };
 
@@ -1291,8 +1291,8 @@ execvm()
       tftfillellipse(sp[4], sp[3], sp[2], sp[1], *sp);
     else if(opcode == SQRT)
       ax = root(*sp);
-    else if(opcode == STOK)
-      ax = (int)strtalk((char*)sp[2], (char*)sp[1], *sp);
+    else if(opcode == ATOI)
+      ax = atoi((char*)*sp);
 
     else{
       printtxt("Unknown instruction", "SERIAL", 0, 0);
@@ -1314,7 +1314,7 @@ execprep()
         "buttonread httpget httppost gethostname updatehostname "
         "getmillis absvalue cosine sine tftdrawline "
         "tftdrawpixel tftfillcircle tftsetcursor imureadaccel "
-        "tftfillrect tftdrawellipse tftfillellipse root strtalk void main";
+        "tftfillrect tftdrawellipse tftfillellipse root atoi void main";
 
   i = Char;
   while(i <= While){
@@ -1323,7 +1323,7 @@ execprep()
   }
 
   i = EXIT;
-  while(i <= STOK){
+  while(i <= ATOI){
     lexer();
     currentidentifier[CLASS] = Lib;
     currentidentifier[TYPE] = INT;

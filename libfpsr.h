@@ -22,7 +22,7 @@
 #include <math.h>
 #include <mpu6050_esp32.h>
 
-#define HOSTNAME "gregpete"
+#define HOSTNAME "jaytlang"
 
 extern TFT_eSPI maintft;
 extern MPU6050 mainimu;
@@ -166,15 +166,14 @@ int   root(int input);
 
 /* Other common operations
  * DESC: These are simple -- too simple to warrant their own section.
- *    getmillis() returns exactly what you think it does...more functions
- *    to come down the road! A bootleg strtok, 'strtalk', is also implemented
- *    here as mostly normal. Pass in 1 for the third argument
- *    to indicate the need for a null pointer in argument 1.
+ *    getmillis() returns exactly what you think it does. Additionally,
+ *    while printnum() performs int -> string; atoi accomplished string -> int
+ *    as per POSIX.
  *    
  * REQS: None.
  */
 int   getmillis();
-char *strtalk(char *str, char *delim, int isnull);
+int   atoi(char *str);
 
 
 
