@@ -373,7 +373,7 @@ root(int input)
 }
 
 int
-atoi(char *str)
+ifroma(char *str)
 {
     return atoi(str);
 }

@@ -167,13 +167,13 @@ int   root(int input);
 /* Other common operations
  * DESC: These are simple -- too simple to warrant their own section.
  *    getmillis() returns exactly what you think it does. Additionally,
- *    while printnum() performs int -> string; atoi accomplished string -> int
+ *    while printnum() performs int -> string; ifroma accomplishes string -> int
  *    as per POSIX.
  *    
  * REQS: None.
  */
 int   getmillis();
-int   atoi(char *str);
+int   ifroma(char *str);
 
 
 

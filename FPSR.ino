@@ -1292,7 +1292,7 @@ execvm()
     else if(opcode == SQRT)
       ax = root(*sp);
     else if(opcode == ATOI)
-      ax = atoi((char*)*sp);
+      ax = ifroma((char*)*sp);
 
     else{
       printtxt("Unknown instruction", "SERIAL", 0, 0);
@@ -1314,7 +1314,7 @@ execprep()
         "buttonread httpget httppost gethostname updatehostname "
         "getmillis absvalue cosine sine tftdrawline "
         "tftdrawpixel tftfillcircle tftsetcursor imureadaccel "
-        "tftfillrect tftdrawellipse tftfillellipse root atoi void main";
+        "tftfillrect tftdrawellipse tftfillellipse root ifroma void main";
 
   i = Char;
   while(i <= While){
