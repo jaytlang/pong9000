@@ -1292,7 +1292,7 @@ execvm()
     else if(opcode == SQRT)
       ax = root(*sp);
     else if(opcode == STOK)
-      ax = (char*)strtalk((char*)sp[2], (char*)sp[1], *sp);
+      ax = (int)strtalk((char*)sp[2], (char*)sp[1], *sp);
 
     else{
       printtxt("Unknown instruction", "SERIAL", 0, 0);
