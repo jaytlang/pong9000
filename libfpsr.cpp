@@ -371,3 +371,9 @@ root(int input)
 {
   return (int)sqrt(input);
 }
+
+char*
+strtalk(char *str, char *delim, int isnull)
+{
+    return (isnull) ? strtok(NULL, delim) : strtok(str, delim);
+}

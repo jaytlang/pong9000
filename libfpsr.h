@@ -167,11 +167,15 @@ int   root(int input);
 /* Other common operations
  * DESC: These are simple -- too simple to warrant their own section.
  *    getmillis() returns exactly what you think it does...more functions
- *    to come down the road!
+ *    to come down the road! A bootleg strtok, 'strtalk', is also implemented
+ *    here as mostly normal. Pass in 1 for the third argument
+ *    to indicate the need for a null pointer in argument 1.
  *    
  * REQS: None.
  */
 int   getmillis();
+char *strtalk(char *str, char *delim, int isnull);
+
 
 
 /* Hostname operations.
