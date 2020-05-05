@@ -24,6 +24,8 @@
     STYLE: https://man.cat-v.org/plan_9/6/style.
     The code should be the documentation. FPSR doesn't understand //.
 
+    TODO: Does this code need the .ino extension? Hehe...
+
 */
 
 #include "bootstrap.h"
@@ -31,7 +33,7 @@
 char *importsrc;
 char exitstr[100];
 
-/* FPSR STARTS HERE */
+/* FPSR STARTS HERE - copy pasting from here to setup will work to bootstrap */
 
 int     currtoken;
 char   *src;
@@ -60,8 +62,8 @@ enum{ LC, LI, LN, SC, SN, PSH, JMP, BEQZ, BNEZ, CALL, NFRM, \
       GEQ, SHL, SHR, ADD, SUB, MUL, DIV, MOD, EXIT, HALC, \
       HFRE, MCMP, PRTT, PRTC, PRTN, TPR, TROT, TTXC, TTXS, \
       TFS, TDC, TDR, BTRD, GET, POST, HSTN, SHST, MILS, ABS, \
-      COS, SIN, TDL, TDP, TFC, TSCU, IRA, TFR, TDE, TFE, SQRT,
-      ATOI };
+      COS, SIN, TDL, TDP, TFC, TSCU, IRA, TFR, TDE, TFE, SQRT, \
+      ATOI, RNG };
 
 enum{ TOKEN, HASH, NAME, TYPE, CLASS, VALUE, STYPE, SCLASS, SVAL, IDSIZE };
 
@@ -1293,6 +1295,8 @@ execvm()
       ax = root(*sp);
     else if(opcode == ATOI)
       ax = ifroma((char*)*sp);
+    else if(opcode == RNG)
+      ax = randomint(sp[1], *sp);
 
     else{
       printtxt("Unknown instruction", "SERIAL", 0, 0);
@@ -1314,7 +1318,8 @@ execprep()
         "buttonread httpget httppost gethostname updatehostname "
         "getmillis absvalue cosine sine tftdrawline "
         "tftdrawpixel tftfillcircle tftsetcursor imureadaccel "
-        "tftfillrect tftdrawellipse tftfillellipse root ifroma void main";
+        "tftfillrect tftdrawellipse tftfillellipse root ifroma "
+        "randomint void main";
 
   i = Char;
   while(i <= While){
@@ -1323,7 +1328,7 @@ execprep()
   }
 
   i = EXIT;
-  while(i <= ATOI){
+  while(i <= RNG){
     lexer();
     currentidentifier[CLASS] = Lib;
     currentidentifier[TYPE] = INT;

@@ -377,3 +377,9 @@ ifroma(char *str)
 {
     return atoi(str);
 }
+
+int
+randomint(int minimum, int maximum)
+{
+    return random(minimum, maximum);
+}

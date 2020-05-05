@@ -168,12 +168,14 @@ int   root(int input);
  * DESC: These are simple -- too simple to warrant their own section.
  *    getmillis() returns exactly what you think it does. Additionally,
  *    while printnum() performs int -> string; ifroma accomplishes string -> int
- *    as per POSIX.
+ *    as per POSIX. Random() allows the selection of a random integer, from an
+ *    inclusive minimum to an exclusive maximum.
  *    
- * REQS: None.
+ * REQS: Seed the RNG in the bootstrap with a garbage analog read.
  */
 int   getmillis();
 int   ifroma(char *str);
+int   randomint(int minimum, int maximum);
 
 
 

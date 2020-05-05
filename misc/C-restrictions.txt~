@@ -1,0 +1,19 @@
+EVERYTHING EXCEPT
+- for loops
+- floating pt: integer and char and pointers only
+- += -= *= /=
+- structs
+- preprocessor - no #include or #define - use global variables
+- switch statements
+- definition-time instantiation of variables.
+    you MUST define all variables at the top of a function or the global context, and then AFTER all instantiation is done you may assign them values. Don't interleave declarations and assignments - this is ANSI C!
+- char mystr[50] = "....", use this instead
+    char *mystr;
+    mystr = (char*)heapalloc(50*sizeof(char))
+- group assignments of arrays with {} don't work, use a while loop
+
+CURRENTLY SUPPORTED FUNCTIONS / TO BE SUPPORTED
+***SEE LIBFPSR.h in the main directory
+
+WHAT'S DONE FOR YOU
+***SEE BOOTSTRAP.h in the main directory

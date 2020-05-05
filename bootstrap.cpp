@@ -11,6 +11,7 @@ bootstrap(char* dbuffer, int sizeofdbuffer)
 
   Serial.begin(115200);
   maintft.init();
+  randomSeed(analogRead(0));
   tftrotation(1);
   pinMode(16, INPUT_PULLUP);
   pinMode(5, INPUT_PULLUP);
