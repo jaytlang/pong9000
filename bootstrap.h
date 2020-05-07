@@ -2,6 +2,14 @@
  *  Called out of the main FPSR setup(). Configures peripherals given obj. references in
  *  libfpsr.h. Ideally, the rest of the setup program is never reached.
  *  Preparation with issuing an instruction to compile and run via FPSR.
+ *
+ *  Here, CODESIZE represents the amount of characters long your code is. It's used
+ *  to allocate a buffer during the very beginning of execution to hold the big
+ *  HTTP response with the code to be run through FPSR. FPSRALLOC and LITTLEFPSRALLOC
+ *  are used in various ways for VM memory - check FPSR to see exactly this, but TL;DR...
+ *
+ *  - 30kb/15kb is a safe spread for FPSRALLOC / LITTLEFPSRALLOC
+ *  - 50kb/25kb offers more code, at the cost of some stability (apparently)
  *  
  * 
  */

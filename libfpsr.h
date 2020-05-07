@@ -9,6 +9,13 @@
  * 
  * NOTE: THIS IS NOT COMPILED BY FPSR. Stick to style but use 
  *    any and all language features you would like.
+ *
+ * A more general note: you should know about how returns work because
+ * I couldn't find anywhere else to put it. By convention, C returns of 0
+ * out of an int main indicate success while anything else doesn't. It's
+ * a subtle detail, but FPSR will trigger a reboot if the return doesn't go
+ * to zero, and will spin forever if you do return it zero. Thanks for listening!
+ *
  */
 
 #ifndef libfpsr_h

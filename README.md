@@ -17,6 +17,6 @@ The document at `misc/C-restrictions.txt` provides more information about what i
 ## Structure of this repo
 See the `games/` directory for officially supported games up on the database - the README there documents gameplay in further detail and serves as a nice checklist to mainline new software.
 
-In the `server/` directory, you'll find documentation for the database API, as well as stripped source code for a .NET web app that enables easy posting of new games. Currently, it resides [here](https://web.mit.edu/jaytlang/postcode/).
+In the `server/` directory, you'll find documentation for the database API. We used to have a .NET web app to post games, but abandoned it in favor of the more popular python requests library since it allows easy posting with standard input redirection in `/games`. There's a script in the server directory that does this for you.
 
 Other files in the top level directory include legacy `testbench` files used in testing the compiler before it was connected to the internet, as well as the bootstrap code essential for onlining FPSR.

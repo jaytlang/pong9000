@@ -69,7 +69,7 @@ main()
 {
     int sstat, gameslistsize;
     
-    gameslistsize = 7500;
+    gameslistsize = 7500*sizeof(char);
 
     gameslist = (char*)heapalloc(gameslistsize);
     name = (char*)heapalloc(50);
