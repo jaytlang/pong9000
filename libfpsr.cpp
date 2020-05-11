@@ -244,10 +244,11 @@ httpget(char* input, char* serverpath, char* output, int sizeofoutput)
   client.println(input);
   client.println("Host: 608dev-2.net");
   client.println();
+  Serial.println("Printed to server...");
 
   i = 0;
   clen = 0;
-  while (!client.available()) {}
+  while (!client.available()) Serial.println("Waitin");
   while(client.connected()){
     len = client.available();
     j = 0;

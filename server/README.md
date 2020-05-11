@@ -31,6 +31,13 @@ GET() => game-host mapping for all hosts
 
 Resetting a host to contain no code can be done with the following POST, though this isn't often used nor recommended:
 ```
-POST(reset=*, host) => triggers a game reset, returns 'Done resetting!'
+POST(reset_game_data=*, host) => triggers a game reset, returns 'Done resetting!'
 ```
+
+Similarly, deleting a host off of the game browser in entirety works as follows:
+```
+POST(reset_host=*, host) => removes the host from the database
+```
+
+
 
