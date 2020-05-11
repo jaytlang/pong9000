@@ -24,7 +24,7 @@
     STYLE: https://man.cat-v.org/plan_9/6/style.
     The code should be the documentation. FPSR doesn't understand //.
 
-    TODO: Does this code need the .ino extension? Hehe...
+    TODO: Switch this over to .cpp at the last second.
 
 */
 

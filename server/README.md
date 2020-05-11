@@ -1,6 +1,6 @@
 # Server side operations: a summary
 
-*TL;DR, post your game code [here](https://web.mit.edu/jaytlang/postcode/)*
+*TL;DR use `post.py` to post to the server!*
 
 Our server architecture is fairly unique, in that each game on the server is associated with a specific hostname. Concurrently, each arduino has a hard-coded hostname, and software like the browser references this name when deciding which games to obtain. So, a lot of these calls feature `host` parameters - one can think of these as pointers to fellow peers on the net, and you can use these pointers to perform a variety of operations both in and out of the game sandbox. Examples are shown below.
 
