@@ -214,7 +214,7 @@ int strcmp_replacement(char* one, char* two){
   }
 }
 
-char *fuckingstirtalk(char *pointer, char *delimiters){
+char *strtok(char *pointer, char *delimiters){
     int break_loop;
     int break_first_loop;
     int count;
@@ -285,7 +285,7 @@ int data_extractor(char* data_array){
   counter = 0;
   saved_pointer = data_array;
   break_this_bitch = 0;
-  char_data = fuckingstirtalk(data_array, delim);
+  char_data = strtok(data_array, delim);
   if((*data_array - '0') == 0){
     return 0;
   }
@@ -321,7 +321,7 @@ int data_extractor(char* data_array){
       printtxt(char_data, op_attack_name, 15*sizeof(char), 1);
     }
       counter = counter + 1;
-      char_data = fuckingstirtalk(data_array, delim);
+      char_data = strtok(data_array, delim);
   }
   deleteBox();
   drawNameBoxes();

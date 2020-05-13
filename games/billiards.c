@@ -1,9 +1,9 @@
-/* Billiards edition 1 - not well done edition*/
+/* A simple billiards implementation */
 
 int isidle;
 int incr;
 int timer;
-int periodloop;  /* there is only signed 32 bit ints in the c compiler */
+int periodloop;  
 int primary_timer;
 int posting_timer;
 char *body;
@@ -23,7 +23,7 @@ char *response_buffer;
 
 char *var1;
 char *var2;
-char *var3;  /* USE THE HEAP */
+char *var3; 
 char *var4;
 char *var5;
 char *var6;
@@ -378,7 +378,7 @@ void postPositions()
 
 }
 
-char *fuckingstirtalk(char *pointer, char *delimiters)
+char *strtok(char *pointer, char *delimiters)
 {
     int break_loop;
     int break_first_loop;
@@ -447,8 +447,8 @@ int data_extractor(char *data_array)
     delim[3] = 0;
     saved_pointer = data_array;
     break_this_bitch = 0;
-    char_data = fuckingstirtalk(data_array, delim);
-    printtxt("Evaluated garbage fuckingstirtalk", "SERIAL", 0, 0);
+    char_data = strtok(data_array, delim);
+    printtxt("Evaluated garbage strtok", "SERIAL", 0, 0);
     if((*data_array - '0') == 0){
         printtxt("i am not stupid", "SERIAL", 0, 0);
         return 0;
@@ -507,7 +507,7 @@ int data_extractor(char *data_array)
         }
         counter = counter + 1;
 
-        char_data = fuckingstirtalk(data_array, delim);
+        char_data = strtok(data_array, delim);
     }
     tftfill(0x2FE0);
     return 1;
